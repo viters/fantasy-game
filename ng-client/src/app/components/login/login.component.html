@@ -1,0 +1,26 @@
+<mat-card>
+  <h1>Fantasy Admin</h1>
+  <h4>Login to access your panel</h4>
+
+  <form class="pt-4" [formGroup]="loginForm" (submit)="login()">
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput placeholder="Username" formControlName="username" required>
+        <mat-error *ngIf="loginForm.get('username').hasError('required')">
+          Please provide your username
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput type="password" placeholder="Password" formControlName="password" required>
+        <mat-error *ngIf="loginForm.get('password').hasError('required')">
+          Please provide your password
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" class="w-100" type="submit">Log in</button>
+  </form>
+</mat-card>
