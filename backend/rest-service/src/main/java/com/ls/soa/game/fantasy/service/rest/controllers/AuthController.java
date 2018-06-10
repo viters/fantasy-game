@@ -17,6 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("session")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthController {
     @EJB(mappedName = "java:global/server/AuthService!com.ls.soa.game.fantasy.api.server.services.IAuthService")
     private IAuthService authService;
@@ -25,8 +27,6 @@ public class AuthController {
     private ErrorManager errorManager;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response login(AuthCredentials authCredentials) {
         try {
             String token = authService.login(authCredentials.getUsername(), authCredentials.getPassword());

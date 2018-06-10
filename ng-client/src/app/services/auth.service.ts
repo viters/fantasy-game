@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, tap } from 'rxjs/operators';
 import { User } from 'src/app/models/user';
 import { Router } from '@angular/router';
+import { createApiPath } from '../utils';
+import { sha256 } from 'js-sha256';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AuthService {
   private _userContext$ = new BehaviorSubject<User>(null);
 
@@ -34,16 +34,29 @@ export class AuthService {
     );
   }
 
-  login({username, password}: {username: string; password: string;}): Observable<any> {
-    this._userContext$.next({credentials: {token: 'xD'}, username});
-    this.router.navigate(['']);
-    return null;
-    // return this.http.post();
+  login$({username, password}: { username: string; password: string; }): Observable<{ token: string; }> {
+    return this.http.post<{ token: string; }>(createApiPath('session'), {
+      username,
+      password: sha256(password)
+    }).pipe(
+      tap((res) => {
+        const user: User = {credentials: {token: res.token}, username};
+        this._userContext$.next(user);
+      }),
+      tap(() => this.router.navigateByUrl('/')),
+    );
+  }
+
+  register$({username, password}: { username: string; password: string; }): Observable<any> {
+    return this.http.post(createApiPath('user'), {
+      username,
+      password: sha256(password)
+    });
   }
 
   logout() {
     this._userContext$.next(null);
-    this.router.navigate(['login']);
+    this.router.navigateByUrl('/login');
   }
 
 }

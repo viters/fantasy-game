@@ -18,7 +18,7 @@ export class OnlyUserGuard implements CanActivate {
         if (isLogged) {
           return true;
         } else {
-          this.router.navigate(['login']);
+          this.router.navigateByUrl('/login');
           return false;
         }
       }),

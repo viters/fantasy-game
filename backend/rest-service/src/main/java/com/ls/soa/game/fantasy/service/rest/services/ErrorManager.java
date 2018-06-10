@@ -13,6 +13,7 @@ public class ErrorManager {
     ErrorManager() {
         errors.put("username-invalid", new ErrorResponse("username-invalid", "User with provided username was not found"));
         errors.put("password-invalid", new ErrorResponse("password-invalid", "Password provided for given user was invalid"));
+        errors.put("username-taken", new ErrorResponse("username-taken", "User with provided username already exists"));
     }
 
     public Map<String, ErrorResponse> getErrors() {

@@ -12,8 +12,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              private authService: AuthService,
-              private router: Router) {
+              private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -28,6 +27,8 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    this.authService.login(this.loginForm.value);
+    this.authService.login$(this.loginForm.value).subscribe(
+      (res) => console.log(res)
+    );
   }
 }

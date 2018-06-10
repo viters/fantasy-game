@@ -1,5 +1,6 @@
 package com.ls.soa.game.fantasy.server.services;
 
+import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.services.IUserService;
 import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
 import com.ls.soa.game.fantasy.api.server.models.IUser;
@@ -22,7 +23,7 @@ public class UserService implements IUserService {
     private TokenUtil tokenUtil;
 
     @Override
-    public IUser createUser(String token, String username, String password, String role) throws InsufficientPermissionsException {
+    public IUser createUser(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }

@@ -14,7 +14,8 @@ import java.util.Objects;
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "findUserByUsername",
-                query = "SELECT * FROM users WHERE username = :username"
+                query = "SELECT * FROM users WHERE username = :username",
+                resultClass = User.class
         )
 })
 public class User implements Serializable, IUser {
