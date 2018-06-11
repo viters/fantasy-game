@@ -1,8 +1,8 @@
 package com.ls.soa.game.fantasy.service.rest.controllers;
 
-import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.api.server.exceptions.IncorrectPasswordException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
+import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.service.rest.models.AuthCredentials;
 import com.ls.soa.game.fantasy.service.rest.models.TokenCredentials;
 import com.ls.soa.game.fantasy.service.rest.services.ErrorManager;

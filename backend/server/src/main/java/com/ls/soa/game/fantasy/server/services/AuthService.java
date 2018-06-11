@@ -1,10 +1,10 @@
 package com.ls.soa.game.fantasy.server.services;
 
-import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
-import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.api.server.exceptions.IncorrectPasswordException;
+import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.api.server.models.IUser;
+import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.server.daos.UserDao;
 import com.ls.soa.game.fantasy.server.models.User;
 import com.ls.soa.game.fantasy.server.utils.TokenUtil;
@@ -15,8 +15,6 @@ import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.IAuthService.class)
@@ -32,9 +30,8 @@ public class AuthService implements IAuthService {
     public String login(String username, String password) throws UserNotFoundException, IncorrectPasswordException {
         User user = userDao.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
-
         if (!BCrypt.checkpw(password, user.getPassword())) {
-           throw new IncorrectPasswordException();
+            throw new IncorrectPasswordException();
         }
 
         System.out.println("[SERVER] Creating token for user: " + user.getUsername());

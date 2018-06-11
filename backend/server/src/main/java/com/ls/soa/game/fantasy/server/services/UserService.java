@@ -1,10 +1,10 @@
 package com.ls.soa.game.fantasy.server.services;
 
-import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
-import com.ls.soa.game.fantasy.api.server.services.IUserService;
 import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
+import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.models.IUser;
 import com.ls.soa.game.fantasy.api.server.models.Role;
+import com.ls.soa.game.fantasy.api.server.services.IUserService;
 import com.ls.soa.game.fantasy.server.daos.UserDao;
 import com.ls.soa.game.fantasy.server.models.User;
 import com.ls.soa.game.fantasy.server.utils.TokenUtil;
@@ -29,6 +29,7 @@ public class UserService implements IUserService {
         }
 
         User user = new User(username, password, Role.valueOf(role));
+
         return this.userDao.createUser(user);
     }
 }
