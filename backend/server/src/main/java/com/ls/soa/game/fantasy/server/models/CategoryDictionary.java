@@ -1,14 +1,12 @@
 package com.ls.soa.game.fantasy.server.models;
 
-import com.ls.soa.game.fantasy.api.server.models.ICategoryDictionary;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "category_dictionaries", schema = "public")
-public class CategoryDictionary implements Serializable, ICategoryDictionary {
+public class CategoryDictionary implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -48,12 +46,10 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.elementParam4Name = elementParam4Name;
     }
 
-    @Override
     public long getId() {
         return id;
     }
 
-    @Override
     public String getCategoryName() {
         return categoryName;
     }
@@ -62,7 +58,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.categoryName = categoryName;
     }
 
-    @Override
     public String getCategoryParam1Name() {
         return categoryParam1Name;
     }
@@ -71,7 +66,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.categoryParam1Name = categoryParam1Name;
     }
 
-    @Override
     public String getElementName() {
         return elementName;
     }
@@ -80,7 +74,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.elementName = elementName;
     }
 
-    @Override
     public String getElementParam1Name() {
         return elementParam1Name;
     }
@@ -89,7 +82,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.elementParam1Name = elementParam1Name;
     }
 
-    @Override
     public String getElementParam2Name() {
         return elementParam2Name;
     }
@@ -98,7 +90,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.elementParam2Name = elementParam2Name;
     }
 
-    @Override
     public String getElementParam3Name() {
         return elementParam3Name;
     }
@@ -107,7 +98,6 @@ public class CategoryDictionary implements Serializable, ICategoryDictionary {
         this.elementParam3Name = elementParam3Name;
     }
 
-    @Override
     public String getElementParam4Name() {
         return elementParam4Name;
     }

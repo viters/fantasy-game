@@ -1,6 +1,5 @@
 package com.ls.soa.game.fantasy.server.models;
 
-import com.ls.soa.game.fantasy.api.server.models.IUser;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,7 +17,7 @@ import java.util.Objects;
                 resultClass = User.class
         )
 })
-public class User implements Serializable, IUser {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -59,12 +58,10 @@ public class User implements Serializable, IUser {
         this.role = role.toString();
     }
 
-    @Override
     public long getId() {
         return id;
     }
 
-    @Override
     public String getUsername() {
         return username;
     }
@@ -77,7 +74,6 @@ public class User implements Serializable, IUser {
         this.password = password;
     }
 
-    @Override
     public String getRole() {
         return role;
     }
@@ -86,12 +82,10 @@ public class User implements Serializable, IUser {
         this.role = role;
     }
 
-    @Override
     public List<Category> getCategories() {
         return categories;
     }
 
-    @Override
     public List<Element> getElements() {
         return elements;
     }

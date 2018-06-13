@@ -1,15 +1,12 @@
 package com.ls.soa.game.fantasy.server.models;
 
-
-import com.ls.soa.game.fantasy.api.server.models.ICategory;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "categories", schema = "public")
-public class Category implements Serializable, ICategory {
+public class Category implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -28,12 +25,10 @@ public class Category implements Serializable, ICategory {
         this.param1 = param1;
     }
 
-    @Override
     public long getId() {
         return id;
     }
 
-    @Override
     public int getParam1() {
         return param1;
     }
@@ -42,7 +37,6 @@ public class Category implements Serializable, ICategory {
         this.param1 = param1;
     }
 
-    @Override
     public User getAuthor() {
         return author;
     }

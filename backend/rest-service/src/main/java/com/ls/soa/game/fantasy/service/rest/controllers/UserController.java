@@ -1,6 +1,7 @@
 package com.ls.soa.game.fantasy.service.rest.controllers;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
+import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.service.rest.models.AuthCredentials;
 import com.ls.soa.game.fantasy.service.rest.services.ErrorManager;
@@ -27,7 +28,9 @@ public class UserController {
     @POST
     public Response register(AuthCredentials authCredentials) {
         try {
-            this.authService.register(authCredentials.getUsername(), authCredentials.getPassword());
+            UserDTO user = this.authService.register(authCredentials.getUsername(), authCredentials.getPassword());
+
+            System.out.println("Created user with ID: " + user.getId());
 
             return Response.status(Response.Status.CREATED).build();
         } catch (UserAlreadyExistsException e) {

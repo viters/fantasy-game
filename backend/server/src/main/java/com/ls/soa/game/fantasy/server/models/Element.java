@@ -1,14 +1,12 @@
 package com.ls.soa.game.fantasy.server.models;
 
-import com.ls.soa.game.fantasy.api.server.models.IElement;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "categories", schema = "public")
-public class Element implements Serializable, IElement {
+public class Element implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -39,12 +37,10 @@ public class Element implements Serializable, IElement {
         this.param4 = param4;
     }
 
-    @Override
     public long getId() {
         return id;
     }
 
-    @Override
     public String getParam1() {
         return param1;
     }
@@ -53,7 +49,6 @@ public class Element implements Serializable, IElement {
         this.param1 = param1;
     }
 
-    @Override
     public int getParam2() {
         return param2;
     }
@@ -62,7 +57,6 @@ public class Element implements Serializable, IElement {
         this.param2 = param2;
     }
 
-    @Override
     public int getParam3() {
         return param3;
     }
@@ -71,7 +65,6 @@ public class Element implements Serializable, IElement {
         this.param3 = param3;
     }
 
-    @Override
     public int getParam4() {
         return param4;
     }
@@ -80,7 +73,6 @@ public class Element implements Serializable, IElement {
         this.param4 = param4;
     }
 
-    @Override
     public User getAuthor() {
         return author;
     }
