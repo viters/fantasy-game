@@ -5,10 +5,8 @@ import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IUserService;
-import com.ls.soa.game.fantasy.server.daos.UserDao;
+import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.User;
-import com.ls.soa.game.fantasy.server.utils.MapperUtil;
-import com.ls.soa.game.fantasy.server.utils.TokenUtil;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -16,15 +14,9 @@ import javax.inject.Inject;
 
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.IUserService.class)
-public class UserService implements IUserService {
+public class UserService extends Service implements IUserService {
     @Inject
-    private UserDao userDao;
-
-    @Inject
-    private TokenUtil tokenUtil;
-
-    @Inject
-    private MapperUtil mapperUtil;
+    private UserDAO userDAO;
 
     @Override
     public UserDTO createUser(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException {
@@ -33,7 +25,8 @@ public class UserService implements IUserService {
         }
 
         User user = new User(username, password, Role.valueOf(role));
+        userDAO.createUser(user);
 
-        return this.mapperUtil.getMapper().map(user, UserDTO.class);
+        return map(user, UserDTO.class);
     }
 }

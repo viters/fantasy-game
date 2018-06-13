@@ -5,34 +5,24 @@ import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IAuthService;
-import com.ls.soa.game.fantasy.server.daos.UserDao;
+import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.User;
-import com.ls.soa.game.fantasy.server.utils.MapperUtil;
-import com.ls.soa.game.fantasy.server.utils.TokenUtil;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.ejb.Remote;
-import javax.ejb.Startup;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Calendar;
 
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.IAuthService.class)
-@Startup
-public class AuthService implements IAuthService {
+public class AuthService extends Service implements IAuthService {
     @Inject
-    private UserDao userDao;
-
-    @Inject
-    private TokenUtil tokenUtil;
-
-    @Inject
-    private MapperUtil mapperUtil;
+    private UserDAO userDAO;
 
     @Override
     public String login(String username, String password) throws UserNotFoundException, IncorrectPasswordException {
-        User user = userDao.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        User user = userDAO.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
         if (!BCrypt.checkpw(password, user.getPassword())) {
             throw new IncorrectPasswordException();
@@ -48,8 +38,8 @@ public class AuthService implements IAuthService {
 
     @Override
     public UserDTO register(String username, String password) throws UserAlreadyExistsException {
-        User user = userDao.createUser(new User(username, password));
+        User user = userDAO.createUser(new User(username, password));
 
-        return this.mapperUtil.getMapper().map(user, UserDTO.class);
+        return map(user, UserDTO.class);
     }
 }
