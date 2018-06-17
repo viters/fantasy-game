@@ -6,6 +6,7 @@ public class ElementDTO {
     private int param2;
     private int param3;
     private int param4;
+    private UserDTO author;
 
     public long getId() {
         return id;
@@ -25,5 +26,9 @@ public class ElementDTO {
 
     public int getParam4() {
         return param4;
+    }
+
+    public UserDTO getAuthor() {
+        return author;
     }
 }

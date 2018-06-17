@@ -38,7 +38,7 @@ public class AuthService extends Service implements IAuthService {
 
     @Override
     public UserDTO register(String username, String password) throws UserAlreadyExistsException {
-        User user = userDAO.createUser(new User(username, password));
+        User user = userDAO.create(new User(username, password));
 
         return map(user, UserDTO.class);
     }

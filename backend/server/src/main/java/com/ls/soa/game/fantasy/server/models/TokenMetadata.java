@@ -3,16 +3,16 @@ package com.ls.soa.game.fantasy.server.models;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 
 public class TokenMetadata {
-    private long id;
+    private long userId;
     private String role;
 
-    public TokenMetadata(String id, String role) {
-        this.id = Long.parseLong(id);
+    public TokenMetadata(String userId, String role) {
+        this.userId = Long.parseLong(userId);
         this.role = role;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
     public String getRole() {

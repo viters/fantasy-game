@@ -2,6 +2,7 @@ package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
+import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IUserService;
@@ -19,14 +20,35 @@ public class UserService extends Service implements IUserService {
     private UserDAO userDAO;
 
     @Override
-    public UserDTO createUser(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException {
+    public UserDTO create(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
         User user = new User(username, password, Role.valueOf(role));
-        userDAO.createUser(user);
+        userDAO.create(user);
 
         return map(user, UserDTO.class);
+    }
+
+    @Override
+    public UserDTO update(String token, UserDTO userDTO) throws InsufficientPermissionsException, UserNotFoundException, UserAlreadyExistsException {
+        if (!tokenUtil.validateToken(token).isAdmin()) {
+            throw new InsufficientPermissionsException();
+        }
+
+        User user = map(userDTO, User.class);
+        userDAO.update(user);
+
+        return map(user, UserDTO.class);
+    }
+
+    @Override
+    public void delete(String token, long userId) throws InsufficientPermissionsException, UserNotFoundException {
+        if (!tokenUtil.validateToken(token).isAdmin()) {
+            throw new InsufficientPermissionsException();
+        }
+
+        userDAO.delete(userId);
     }
 }

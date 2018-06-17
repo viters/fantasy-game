@@ -2,10 +2,23 @@ package com.ls.soa.game.fantasy.server.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "categories", schema = "public")
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "getAllCategories",
+                query = "SELECT * FROM categories",
+                resultClass = Category.class
+        ),
+        @NamedNativeQuery(
+                name = "findCategoryById",
+                query = "SELECT * FROM categories WHERE id = :id",
+                resultClass = Category.class
+        )
+})
 public class Category implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +28,14 @@ public class Category implements Serializable {
     @Column(name = "param1")
     private int param1;
 
+    @ManyToOne(targetEntity = CategoryDictionary.class)
+    private CategoryDictionary categoryDictionary;
+
     @ManyToOne(targetEntity = User.class)
     private User author;
+
+    @OneToMany(targetEntity = Element.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Element> elements;
 
     public Category() {
     }
@@ -43,6 +62,22 @@ public class Category implements Serializable {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public CategoryDictionary getCategoryDictionary() {
+        return categoryDictionary;
+    }
+
+    public void setCategoryDictionary(CategoryDictionary categoryDictionary) {
+        this.categoryDictionary = categoryDictionary;
+    }
+
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void merge(Category category) {
+        setParam1(category.param1);
     }
 
     @Override

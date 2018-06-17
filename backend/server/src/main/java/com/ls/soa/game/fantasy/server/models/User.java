@@ -12,8 +12,18 @@ import java.util.Objects;
 @Table(name = "users", schema = "public")
 @NamedNativeQueries({
         @NamedNativeQuery(
+                name = "findUserById",
+                query = "SELECT * FROM users WHERE id = :id",
+                resultClass = User.class
+        ),
+        @NamedNativeQuery(
                 name = "findUserByUsername",
                 query = "SELECT * FROM users WHERE username = :username",
+                resultClass = User.class
+        ),
+        @NamedNativeQuery(
+                name = "getAllUsers",
+                query = "SELECT * FROM users",
                 resultClass = User.class
         )
 })
@@ -32,10 +42,10 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @OneToMany(targetEntity = Category.class)
+    @OneToMany(targetEntity = Category.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Category> categories;
 
-    @OneToMany(targetEntity = Element.class)
+    @OneToMany(targetEntity = Element.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Element> elements;
 
     @PrePersist()
@@ -66,6 +76,10 @@ public class User implements Serializable {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -88,6 +102,11 @@ public class User implements Serializable {
 
     public List<Element> getElements() {
         return elements;
+    }
+
+    public void merge(User user) {
+        this.setUsername(user.username);
+        this.setRole(user.role);
     }
 
     @Override

@@ -5,7 +5,19 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "categories", schema = "public")
+@Table(name = "elements", schema = "public")
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "getAllElements",
+                query = "SELECT * FROM elements",
+                resultClass = Element.class
+        ),
+        @NamedNativeQuery(
+                name = "findElementById",
+                query = "SELECT * FROM elements WHERE id = :id",
+                resultClass = Category.class
+        )
+})
 public class Element implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +38,9 @@ public class Element implements Serializable {
 
     @ManyToOne(targetEntity = User.class)
     private User author;
+
+    @ManyToOne(targetEntity = Category.class)
+    private Category category;
 
     public Element() {
     }
@@ -79,6 +94,21 @@ public class Element implements Serializable {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void merge(Element element) {
+        setParam1(element.param1);
+        setParam2(element.param2);
+        setParam3(element.param3);
+        setParam4(element.param4);
     }
 
     @Override

@@ -2,10 +2,24 @@ package com.ls.soa.game.fantasy.server.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "category_dictionaries", schema = "public")
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "findCategoryDictionaryById",
+                query = "SELECT * FROM category_dictionaries WHERE id = :id",
+                resultClass = CategoryDictionary.class
+        ),
+        @NamedNativeQuery(
+                name = "getAllCategoryDictionaries",
+                query = "SELECT * FROM category_dictionaries",
+                resultClass = CategoryDictionary.class
+        )
+
+})
 public class CategoryDictionary implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +47,15 @@ public class CategoryDictionary implements Serializable {
     @Column(name = "element_param4_name", nullable = false)
     private String elementParam4Name;
 
+    @OneToMany(targetEntity = Category.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Category> categories;
+
     public CategoryDictionary() {
     }
 
-    public CategoryDictionary(String categoryName, String categoryParam1Name, String elementName, String elementParam1Name, String elementParam2Name, String elementParam3Name, String elementParam4Name) {
+    public CategoryDictionary(String categoryName, String categoryParam1Name, String elementName,
+                              String elementParam1Name, String elementParam2Name, String elementParam3Name,
+                              String elementParam4Name) {
         this.categoryName = categoryName;
         this.categoryParam1Name = categoryParam1Name;
         this.elementName = elementName;
@@ -104,6 +123,20 @@ public class CategoryDictionary implements Serializable {
 
     public void setElementParam4Name(String elementParam4Name) {
         this.elementParam4Name = elementParam4Name;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void merge(CategoryDictionary categoryDictionary) {
+        setCategoryName(categoryDictionary.categoryName);
+        setCategoryParam1Name(categoryDictionary.categoryParam1Name);
+        setElementName(categoryDictionary.elementName);
+        setElementParam1Name(categoryDictionary.elementParam1Name);
+        setElementParam2Name(categoryDictionary.elementParam2Name);
+        setElementParam3Name(categoryDictionary.elementParam3Name);
+        setElementParam4Name(categoryDictionary.elementParam4Name);
     }
 
     @Override
