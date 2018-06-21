@@ -1,6 +1,6 @@
 export interface Context {
-  credentials: {
-    token: string;
-  };
+  token: string;
   username: string;
+  userId: number;
+  role: string;
 }

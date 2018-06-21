@@ -18,11 +18,19 @@
   </div>
 </div>
 
-<ng-container *ngIf="selectedDictionary && elements">
+<ng-container *ngIf="selectedDictionary && elements && categories">
   <table mat-table [dataSource]="elements[selectedDictionary.id]" class="mat-elevation-z8">
     <ng-container matColumnDef="index">
       <th mat-header-cell *matHeaderCellDef>No.</th>
-      <td mat-cell *matCellDef="let category; let i = index;">{{i + 1}}</td>
+      <td mat-cell *matCellDef="let element; let i = index;">{{i + 1}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef>Category (Param)</th>
+      <td mat-cell *matCellDef="let element">
+        {{selectedDictionary.categoryName}}
+        ({{getCategoryById(element.categoryId).param1}})
+      </td>
     </ng-container>
 
     <ng-container matColumnDef="param1">

@@ -1,0 +1,82 @@
+<h2>{{isUpdate ? 'Update' : 'Create'}} category type</h2>
+
+<form [formGroup]="categoryDictionaryForm" (submit)="save()">
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Category name"
+             formControlName="categoryName" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('categoryName').hasError('required')">
+        Please provide category name
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Category(1)"
+             formControlName="categoryParam1Name" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('categoryParam1Name').hasError('required')">
+        Please provide category(1)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Element name"
+             formControlName="elementName" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('elementName').hasError('required')">
+        Please provide element name
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Element(1)"
+             formControlName="elementParam1Name" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('elementParam1Name').hasError('required')">
+        Please provide element(1)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Element(2)"
+             formControlName="elementParam2Name" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('elementParam2Name').hasError('required')">
+        Please provide element(2)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Element(3)"
+             formControlName="elementParam3Name" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('elementParam3Name').hasError('required')">
+        Please provide element(3)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <input matInput
+             placeholder="Element(4)"
+             formControlName="elementParam4Name" required>
+      <mat-error *ngIf="categoryDictionaryForm.get('elementParam4Name').hasError('required')">
+        Please provide element(4)
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <button mat-raised-button color="primary" class="w-100" type="submit">Confirm</button>
+</form>

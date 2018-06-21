@@ -6,6 +6,7 @@ import { Context } from 'src/app/models/context';
 import { Router } from '@angular/router';
 import { createApiPath } from '../utils';
 import { sha256 } from 'js-sha256';
+import * as jwtDecode from 'jwt-decode';
 
 const SessionsPath = 'sessions';
 const UsersPath = 'users';
@@ -37,13 +38,22 @@ export class AuthService {
     );
   }
 
+  get isAdmin$(): Observable<boolean> {
+    return this._userContext$.pipe(
+      filter(Boolean),
+      map((x: Context) => x.role === 'admin'),
+      distinctUntilChanged(),
+    );
+  }
+
   login$({username, password}: { username: string; password: string; }): Observable<{ token: string; }> {
     return this.http.post<{ token: string; }>(createApiPath(SessionsPath), {
       username,
       password: sha256(password)
     }).pipe(
       tap((res) => {
-        const user: Context = {credentials: {token: res.token}, username};
+        const metadata: any = jwtDecode(res.token);
+        const user: Context = {token: res.token, username, userId: +metadata.sub, role: metadata.role};
         this._userContext$.next(user);
       }),
       tap(() => this.router.navigateByUrl('/')),

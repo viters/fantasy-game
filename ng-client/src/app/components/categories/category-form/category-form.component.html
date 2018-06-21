@@ -1,6 +1,6 @@
 <h2>{{isUpdate ? 'Update' : 'Create'}} category</h2>
 
-<form class="pt-4" [formGroup]="categoryForm" (submit)="save()">
+<form [formGroup]="categoryForm" (submit)="save()">
   <div class="form-group">
     <mat-form-field class="d-block">
       <mat-select placeholder="Category type" formControlName="categoryDictionaryId">
@@ -8,6 +8,9 @@
           {{c.categoryName}}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="categoryForm.get('categoryDictionaryId').hasError('required')">
+        Please provide category type
+      </mat-error>
     </mat-form-field>
   </div>
 

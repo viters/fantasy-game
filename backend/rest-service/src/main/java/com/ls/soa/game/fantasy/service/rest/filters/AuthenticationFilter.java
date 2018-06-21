@@ -4,6 +4,7 @@ import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import com.ls.soa.game.fantasy.api.server.services.IAuthService;
+import com.ls.soa.game.fantasy.service.rest.models.ErrorResponse;
 import com.ls.soa.game.fantasy.service.rest.utils.Secured;
 
 import javax.ejb.EJB;
@@ -40,8 +41,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 TokenMetadataDTO metadata = authService.validateToken(token);
 
                 Secured secured = resourceInfo.getResourceMethod().getAnnotation(Secured.class);
-                if (secured.role().equals(Role.ADMIN.toString()) && !metadata.isAdmin()) {
-                    containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+                if (secured.role().equals(Role.ADMIN) && !metadata.isAdmin()) {
+                    Response unauthorized = Response.status(Response.Status.UNAUTHORIZED)
+                            .entity(new ErrorResponse("unauthorized", "Unauthorized to perform action"))
+                            .build();
+                    containerRequestContext.abortWith(unauthorized);
                 }
 
                 containerRequestContext.setSecurityContext(new SecurityContext() {

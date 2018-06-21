@@ -33,6 +33,8 @@ import { CategoryFormComponent } from './components/categories/category-form/cat
 import { CategoryMetadataPipe } from './pipes/category-metadata.pipe';
 import { ElementsComponent } from './components/elements/elements.component';
 import { ElementFormComponent } from './components/elements/elements-form/element-form.component';
+import { MetadataComponent } from './components/metadata/metadata.component';
+import { MetadataFormComponent } from './components/metadata/metadata-form/metadata-form.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { ElementFormComponent } from './components/elements/elements-form/elemen
     CategoryMetadataPipe,
     ElementsComponent,
     ElementFormComponent,
+    MetadataComponent,
+    MetadataFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,6 +80,7 @@ import { ElementFormComponent } from './components/elements/elements-form/elemen
   entryComponents: [
     CategoryFormComponent,
     ElementFormComponent,
+    MetadataFormComponent,
   ],
   bootstrap: [AppComponent],
 })

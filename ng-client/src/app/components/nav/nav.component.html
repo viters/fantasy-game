@@ -12,7 +12,7 @@
         <mat-icon class="mr-2">view_comfy</mat-icon> Elements</a>
       <a mat-list-item [routerLink]="'/categories'">
         <mat-icon class="mr-2">ballot</mat-icon> Categories</a>
-      <a mat-list-item>
+      <a mat-list-item *ngIf="isAdmin$ | async" [routerLink]="'/metadata'">
         <mat-icon class="mr-2">developer_board</mat-icon> Metadata</a>
       <a mat-list-item (click)="logout()">
         <mat-icon class="mr-2">arrow_back</mat-icon> Logout</a>

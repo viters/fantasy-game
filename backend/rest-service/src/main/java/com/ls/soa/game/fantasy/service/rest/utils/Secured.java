@@ -1,5 +1,7 @@
 package com.ls.soa.game.fantasy.service.rest.utils;
 
+import com.ls.soa.game.fantasy.api.server.models.Role;
+
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,5 +12,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Secured {
-    String role() default "";
+    Role role() default Role.USER;
 }

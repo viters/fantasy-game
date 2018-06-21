@@ -1,6 +1,6 @@
 <h2>{{isUpdate ? 'Update' : 'Create'}} element</h2>
 
-<form class="pt-4" [formGroup]="elementForm" (submit)="save()">
+<form [formGroup]="elementForm" (submit)="save()">
   <div class="form-group">
     <mat-form-field class="d-block">
       <mat-select placeholder="Element type" formControlName="categoryDictionaryId">
@@ -8,10 +8,13 @@
           {{c.elementName}}
         </mat-option>
       </mat-select>
+      <mat-error *ngIf="elementForm.get('categoryDictionaryId').hasError('required')">
+        Please provide element type
+      </mat-error>
     </mat-form-field>
   </div>
 
-  <ng-container *ngIf="elementForm.get('categoryDictionaryId').value">
+  <ng-container *ngIf="elementForm.get('categoryDictionaryId').value && categories">
     <div class="form-group">
       <mat-form-field class="d-block">
         <mat-select placeholder="Category (Param)" formControlName="categoryId">
@@ -20,6 +23,9 @@
             ({{c.param1}})
           </mat-option>
         </mat-select>
+        <mat-error *ngIf="elementForm.get('categoryDictionaryId').hasError('required')">
+          Please provide category
+        </mat-error>
       </mat-form-field>
     </div>
 

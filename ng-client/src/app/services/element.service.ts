@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { createApiPath } from '../utils';
 import { Observable } from 'rxjs';
 import { AppElement } from '../models/element';
+import { map } from 'rxjs/operators';
+import * as R from 'ramda';
 
 const ElementsPath = 'elements';
 
@@ -15,6 +17,12 @@ export class ElementService {
 
   list$(): Observable<AppElement[]> {
     return this.http.get<AppElement[]>(createApiPath(ElementsPath));
+  }
+
+  listByCategoryDictionary$(): Observable<{ [key: number]: AppElement[] }> {
+    return this.list$().pipe(
+      map(res => R.groupBy((i: AppElement) => i.categoryDictionaryId, res)),
+    );
   }
 
   create$(element: AppElement): Observable<AppElement> {

@@ -14,10 +14,9 @@ import { CategoryService } from '../../../services/category.service';
 export class CategoryFormComponent implements OnInit {
   categoryForm: FormGroup;
   categoryDictionaries$: Observable<CategoryDictionary[]>;
-  updateId: number;
 
   get isUpdate() {
-    return this.updateId !== undefined;
+    return this.categoryForm.get('id').value !== null;
   }
 
   constructor(private formBuilder: FormBuilder,
@@ -30,18 +29,15 @@ export class CategoryFormComponent implements OnInit {
   ngOnInit() {
     this.categoryDictionaries$ = this.categoryDictionaryService.dictionaries$;
 
-    if (this.data && this.data.category) {
-      this.categoryForm = this.formBuilder.group({
-        categoryDictionaryId: [this.data.category.categoryDictionaryId, Validators.required],
-        param1: [this.data.category.param1, Validators.required],
-      });
+    this.categoryForm = this.formBuilder.group({
+      id: [null],
+      authorId: [null],
+      categoryDictionaryId: [null, Validators.required],
+      param1: [null, Validators.required],
+    });
 
-      this.updateId = this.data.category.id;
-    } else {
-      this.categoryForm = this.formBuilder.group({
-        categoryDictionaryId: [undefined, Validators.required],
-        param1: [0, Validators.required],
-      });
+    if (this.data && this.data.category) {
+      this.categoryForm.setValue(this.data.category);
     }
   }
 
@@ -51,7 +47,7 @@ export class CategoryFormComponent implements OnInit {
         this.categoryService.create$(this.categoryForm.value)
           .subscribe((r) => this.dialogRef.close(r));
       } else {
-        this.categoryService.update$({id: this.updateId, ...this.categoryForm.value})
+        this.categoryService.update$(this.categoryForm.value)
           .subscribe((r) => this.dialogRef.close(r));
       }
     }

@@ -16,11 +16,10 @@ import { CategoryService } from '../../../services/category.service';
 export class ElementFormComponent implements OnInit {
   elementForm: FormGroup;
   categoryDictionaries$: Observable<CategoryDictionary[]>;
-  updateId: number;
-  categories: { [key: number]: Category };
+  categories: { [key: number]: Category[] };
 
   get isUpdate() {
-    return this.updateId !== undefined;
+    return this.elementForm.get('id').value !== null;
   }
 
   constructor(private formBuilder: FormBuilder,
@@ -34,26 +33,19 @@ export class ElementFormComponent implements OnInit {
   ngOnInit() {
     this.categoryDictionaries$ = this.categoryDictionaryService.dictionaries$;
 
-    if (this.data && this.data.element) {
-      this.elementForm = this.formBuilder.group({
-        categoryDictionaryId: [this.data.element.categoryDictionaryId, Validators.required],
-        categoryId: [this.data.element.categoryId, Validators.required],
-        param1: [this.data.element.param1, Validators.required],
-        param2: [this.data.element.param2, Validators.required],
-        param3: [this.data.element.param3, Validators.required],
-        param4: [this.data.element.param4, Validators.required],
-      });
+    this.elementForm = this.formBuilder.group({
+      id: [null],
+      authorId: [null],
+      categoryDictionaryId: [null, Validators.required],
+      categoryId: [null, Validators.required],
+      param1: [null, Validators.required],
+      param2: [null, Validators.required],
+      param3: [null, Validators.required],
+      param4: [null, Validators.required],
+    });
 
-      this.updateId = this.data.element.id;
-    } else {
-      this.elementForm = this.formBuilder.group({
-        categoryDictionaryId: [undefined, Validators.required],
-        categoryId: [undefined, Validators.required],
-        param1: [undefined, Validators.required],
-        param2: [undefined, Validators.required],
-        param3: [undefined, Validators.required],
-        param4: [undefined, Validators.required],
-      });
+    if (this.data && this.data.element) {
+      this.elementForm.setValue(this.data.element);
     }
 
     this.categoryService.listByCategoryDictionary$().subscribe(r => this.categories = r);
@@ -63,10 +55,10 @@ export class ElementFormComponent implements OnInit {
     if (this.elementForm.valid) {
       if (!this.isUpdate) {
         this.elementService.create$(this.elementForm.value)
-          .subscribe((r) => this.dialogRef.close(r));
+          .subscribe((item) => this.dialogRef.close(item));
       } else {
-        this.elementService.update$({id: this.updateId, ...this.elementForm.value})
-          .subscribe((r) => this.dialogRef.close(r));
+        this.elementService.update$(this.elementForm.value)
+          .subscribe((item) => this.dialogRef.close(item));
       }
     }
   }

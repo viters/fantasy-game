@@ -23,7 +23,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
   protected appendAuthHeader$(req: HttpRequest<any>): Observable<HttpRequest<any>> {
     return this.authService.userContext$.pipe(
       take(1),
-      map(userContext => userContext.credentials.token),
+      map(userContext => userContext.token),
       map((token: string) => {
         if (req.headers.has('Authorization')) {
           if (req.headers.get('Authorization') === 'none') {

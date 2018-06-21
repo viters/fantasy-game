@@ -5,13 +5,15 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { ElementsComponent } from './components/elements/elements.component';
+import { MetadataComponent } from './components/metadata/metadata.component';
+import { OnlyAdminGuard } from './services/only-admin.guard';
 
 const routes: Routes = [
   {
     path: '', canActivate: [OnlyUserGuard], component: DashboardComponent, children: [
       {path: 'elements', component: ElementsComponent},
       {path: 'categories', component: CategoriesComponent},
-      {path: 'metadata', redirectTo: ''},
+      {path: 'metadata', component: MetadataComponent, canActivate: [OnlyAdminGuard]},
     ],
   },
   {path: 'login', component: LoginComponent},

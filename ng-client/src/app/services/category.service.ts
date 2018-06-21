@@ -19,7 +19,7 @@ export class CategoryService {
     return this.http.get<Category[]>(createApiPath(CategoriesPath));
   }
 
-  listByCategoryDictionary$(): Observable<{ [key: number]: Category }> {
+  listByCategoryDictionary$(): Observable<{ [key: number]: Category[] }> {
     return this.list$().pipe(
       map(res => R.groupBy((i: Category) => i.categoryDictionaryId, res)),
     );
