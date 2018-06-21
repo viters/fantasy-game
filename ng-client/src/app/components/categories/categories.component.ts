@@ -4,8 +4,6 @@ import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material';
 import { CategoryFormComponent } from './category-form/category-form.component';
 import { CategoryDictionaryService } from '../../services/category-dictionary.service';
-import { map } from 'rxjs/operators';
-import * as R from 'ramda';
 import { Category } from '../../models/category';
 import { CategoryDictionary } from '../../models/category-dictionary';
 
@@ -15,7 +13,7 @@ import { CategoryDictionary } from '../../models/category-dictionary';
   styleUrls: ['./categories.component.scss'],
 })
 export class CategoriesComponent implements OnInit {
-  categories: Category[];
+  categories: { [key: number]: Category };
   displayedColumns = ['index', 'param1', 'actions'];
   categoryDictionaries$: Observable<CategoryDictionary[]>;
   selectedDictionary: CategoryDictionary;
@@ -30,9 +28,7 @@ export class CategoriesComponent implements OnInit {
 
     this.categoryDictionaries$.subscribe(x => this.selectedDictionary = x[0]);
 
-    this.categoryService.list$().pipe(
-      map(res => R.groupBy((i: Category) => i.categoryDictionaryId, res)),
-    ).subscribe(r => this.categories = r);
+    this.categoryService.listByCategoryDictionary$().subscribe(r => this.categories = r);
   }
 
   create() {
@@ -43,7 +39,7 @@ export class CategoriesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(console.log);
   }
 
-  edit(category) {
+  edit(category: Category) {
     let dialogRef = this.dialog.open(CategoryFormComponent, {
       width: '400px',
       data: {category, selectedDictionary: this.selectedDictionary},
@@ -52,7 +48,7 @@ export class CategoriesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(console.log);
   }
 
-  delete(category) {
+  delete(category: Category) {
     if (confirm('Are you sure you want to remove category no. ' + category.id)) {
       this.categoryService.delete$(category).subscribe(console.log);
     }

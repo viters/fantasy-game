@@ -1,6 +1,7 @@
 package com.ls.soa.game.fantasy.api.server.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ElementDTO implements Serializable {
     private long id;
@@ -10,6 +11,7 @@ public class ElementDTO implements Serializable {
     private int param4;
     private long authorId;
     private long categoryId;
+    private long categoryDictionaryId;
 
     public long getId() {
         return id;
@@ -65,5 +67,40 @@ public class ElementDTO implements Serializable {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public long getCategoryDictionaryId() {
+        return categoryDictionaryId;
+    }
+
+    public void setCategoryDictionaryId(long categoryDictionaryId) {
+        this.categoryDictionaryId = categoryDictionaryId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElementDTO)) return false;
+        ElementDTO that = (ElementDTO) o;
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "ElementDTO{" +
+                "id=" + id +
+                ", param1='" + param1 + '\'' +
+                ", param2=" + param2 +
+                ", param3=" + param3 +
+                ", param4=" + param4 +
+                ", authorId=" + authorId +
+                ", categoryId=" + categoryId +
+                ", categoryDictionaryId=" + categoryDictionaryId +
+                '}';
     }
 }

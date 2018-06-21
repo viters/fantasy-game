@@ -4,13 +4,11 @@ import com.ls.soa.game.fantasy.api.server.exceptions.CategoryDictionaryNotFoundE
 import com.ls.soa.game.fantasy.api.server.exceptions.ElementNotFoundException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.server.models.Category;
+import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
 import com.ls.soa.game.fantasy.server.models.Element;
 import com.ls.soa.game.fantasy.server.models.User;
 import org.hibernate.Session;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,11 +17,13 @@ import java.util.stream.Collectors;
 public class ElementDAO extends DAO {
     private CategoryDAO categoryDAO;
     private UserDAO userDAO;
+    private CategoryDictionaryDAO categoryDictionaryDAO;
 
     public ElementDAO(Session session) {
         super(session);
         this.categoryDAO = new CategoryDAO(session);
         this.userDAO = new UserDAO(session);
+        this.categoryDictionaryDAO = new CategoryDictionaryDAO(session);
     }
 
     public Optional<Element> findById(long id) {
@@ -46,9 +46,16 @@ public class ElementDAO extends DAO {
             throw new UserNotFoundException();
         }
 
+        Optional<CategoryDictionary> categoryDictionary = categoryDictionaryDAO.findById(element.getCategoryDictionaryId());
+
+        if (!categoryDictionary.isPresent()) {
+            throw new CategoryDictionaryNotFoundException();
+        }
+
         session.getTransaction().begin();
         element.setCategory(category.get());
         element.setAuthor(user.get());
+        element.setCategoryDictionary(categoryDictionary.get());
         session.saveOrUpdate(element);
         session.getTransaction().commit();
 

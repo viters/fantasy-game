@@ -1,6 +1,7 @@
 package com.ls.soa.game.fantasy.api.server.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class TokenMetadataDTO implements Serializable {
     private long userId;
@@ -29,5 +30,26 @@ public class TokenMetadataDTO implements Serializable {
 
     public boolean isAdmin() {
         return Role.ADMIN.toString().equals(role);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TokenMetadataDTO)) return false;
+        TokenMetadataDTO that = (TokenMetadataDTO) o;
+        return getUserId() == that.getUserId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId());
+    }
+
+    @Override
+    public String toString() {
+        return "TokenMetadataDTO{" +
+                "userId=" + userId +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

@@ -1,7 +1,14 @@
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import {
-  MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSelectModule,
+  MatButtonModule,
+  MatCardModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatSelectModule,
   MatSidenavModule,
   MatSnackBarModule,
   MatTableModule,
@@ -24,6 +31,8 @@ import { AuthService } from './services/auth.service';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { CategoryFormComponent } from './components/categories/category-form/category-form.component';
 import { CategoryMetadataPipe } from './pipes/category-metadata.pipe';
+import { ElementsComponent } from './components/elements/elements.component';
+import { ElementFormComponent } from './components/elements/elements-form/element-form.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +44,8 @@ import { CategoryMetadataPipe } from './pipes/category-metadata.pipe';
     CategoriesComponent,
     CategoryFormComponent,
     CategoryMetadataPipe,
+    ElementsComponent,
+    ElementFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,6 +75,7 @@ import { CategoryMetadataPipe } from './pipes/category-metadata.pipe';
   ],
   entryComponents: [
     CategoryFormComponent,
+    ElementFormComponent,
   ],
   bootstrap: [AppComponent],
 })

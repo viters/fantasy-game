@@ -11,16 +11,20 @@
     </mat-form-field>
   </div>
 
-  <div class="form-group">
-    <mat-form-field class="d-block">
-      <input matInput
-             [placeholder]="categoryForm.get('categoryDictionaryId').value | categoryMetadata:'categoryParam1Name' | async"
-             formControlName="param1" required>
-      <mat-error *ngIf="categoryForm.get('param1').hasError('required')">
-        Please provide param "{{categoryForm.get('categoryDictionaryId').value | categoryMetadata:'categoryParam1Name' | async}}"
-      </mat-error>
-    </mat-form-field>
-  </div>
+  <ng-container *ngIf="categoryForm.get('categoryDictionaryId').value">
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput
+               type="number"
+               [placeholder]="categoryForm.get('categoryDictionaryId').value | categoryMetadata:'categoryParam1Name' | async"
+               formControlName="param1" required>
+        <mat-error *ngIf="categoryForm.get('param1').hasError('required')">
+          Please provide param "{{categoryForm.get('categoryDictionaryId').value | categoryMetadata:'categoryParam1Name'
+          | async}}"
+        </mat-error>
+      </mat-form-field>
+    </div>
 
-  <button mat-raised-button color="primary" class="w-100" type="submit">Confirm</button>
+    <button mat-raised-button color="primary" class="w-100" type="submit">Confirm</button>
+  </ng-container>
 </form>

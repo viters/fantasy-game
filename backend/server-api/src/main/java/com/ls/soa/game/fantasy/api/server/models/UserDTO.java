@@ -1,6 +1,7 @@
 package com.ls.soa.game.fantasy.api.server.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class UserDTO implements Serializable {
     private long id;
@@ -29,5 +30,27 @@ public class UserDTO implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDTO)) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return getId() == userDTO.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CategoryDictionaryService } from '../services/category-dictionary.service';
-import { map} from 'rxjs/operators';
-import { Observable } from 'rxjs/index';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Pipe({
   name: 'categoryMetadata',

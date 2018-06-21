@@ -2,10 +2,9 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { CategoryDictionaryService } from '../../../services/category-dictionary.service';
-import { Observable } from 'rxjs/index';
+import { Observable } from 'rxjs';
 import { CategoryDictionary } from '../../../models/category-dictionary';
 import { CategoryService } from '../../../services/category.service';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-category-form',
@@ -41,7 +40,7 @@ export class CategoryFormComponent implements OnInit {
     } else {
       this.categoryForm = this.formBuilder.group({
         categoryDictionaryId: [undefined, Validators.required],
-        param1: ['', Validators.required],
+        param1: [0, Validators.required],
       });
     }
   }

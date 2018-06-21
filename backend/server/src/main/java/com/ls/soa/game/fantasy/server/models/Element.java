@@ -15,7 +15,7 @@ import java.util.Objects;
         @NamedNativeQuery(
                 name = "findElementById",
                 query = "SELECT * FROM elements WHERE id = :id",
-                resultClass = Category.class
+                resultClass = Element.class
         )
 })
 public class Element implements Serializable {
@@ -47,6 +47,12 @@ public class Element implements Serializable {
 
     @Column(name = "category_id", insertable = false, updatable = false)
     private long categoryId;
+
+    @ManyToOne(targetEntity = CategoryDictionary.class, fetch = FetchType.LAZY)
+    private CategoryDictionary categoryDictionary;
+
+    @Column(name = "categorydictionary_id", insertable = false, updatable = false)
+    private long categoryDictionaryId;
 
     public Element() {
     }
@@ -128,6 +134,22 @@ public class Element implements Serializable {
 
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public CategoryDictionary getCategoryDictionary() {
+        return categoryDictionary;
+    }
+
+    public void setCategoryDictionary(CategoryDictionary categoryDictionary) {
+        this.categoryDictionary = categoryDictionary;
+    }
+
+    public long getCategoryDictionaryId() {
+        return categoryDictionaryId;
+    }
+
+    public void setCategoryDictionaryId(long categoryDictionaryId) {
+        this.categoryDictionaryId = categoryDictionaryId;
     }
 
     public void merge(Element element) {

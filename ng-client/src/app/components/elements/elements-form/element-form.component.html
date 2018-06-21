@@ -1,0 +1,79 @@
+<h2>{{isUpdate ? 'Update' : 'Create'}} element</h2>
+
+<form class="pt-4" [formGroup]="elementForm" (submit)="save()">
+  <div class="form-group">
+    <mat-form-field class="d-block">
+      <mat-select placeholder="Element type" formControlName="categoryDictionaryId">
+        <mat-option *ngFor="let c of (categoryDictionaries$ | async)" [value]="c.id">
+          {{c.elementName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <ng-container *ngIf="elementForm.get('categoryDictionaryId').value">
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <mat-select placeholder="Category (Param)" formControlName="categoryId">
+          <mat-option *ngFor="let c of categories[elementForm.get('categoryDictionaryId').value]" [value]="c.id">
+            {{elementForm.get('categoryDictionaryId').value | categoryMetadata:'categoryName' | async}}
+            ({{c.param1}})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput
+               [placeholder]="elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam1Name' | async"
+               formControlName="param1" required>
+        <mat-error *ngIf="elementForm.get('param1').hasError('required')">
+          Please provide param "{{elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam1Name' |
+          async}}"
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput
+               type="number"
+               [placeholder]="elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam2Name' | async"
+               formControlName="param2" required>
+        <mat-error *ngIf="elementForm.get('param2').hasError('required')">
+          Please provide param "{{elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam2Name'
+          | async}}"
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput
+               type="number"
+               [placeholder]="elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam3Name' | async"
+               formControlName="param3" required>
+        <mat-error *ngIf="elementForm.get('param3').hasError('required')">
+          Please provide param "{{elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam3Name'
+          | async}}"
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field class="d-block">
+        <input matInput
+               type="number"
+               [placeholder]="elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam4Name' | async"
+               formControlName="param4" required>
+        <mat-error *ngIf="elementForm.get('param4').hasError('required')">
+          Please provide param "{{elementForm.get('categoryDictionaryId').value | categoryMetadata:'elementParam4Name'
+          | async}}"
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" class="w-100" type="submit">Confirm</button>
+  </ng-container>
+</form>

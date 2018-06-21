@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { createApiPath } from '../utils';
 import { Category } from '../models/category';
+import { map } from 'rxjs/operators';
+import * as R from 'ramda';
 
 const CategoriesPath = 'categories';
 
@@ -17,6 +19,12 @@ export class CategoryService {
     return this.http.get<Category[]>(createApiPath(CategoriesPath));
   }
 
+  listByCategoryDictionary$(): Observable<{ [key: number]: Category }> {
+    return this.list$().pipe(
+      map(res => R.groupBy((i: Category) => i.categoryDictionaryId, res)),
+    );
+  }
+
   create$(category: Category): Observable<Category> {
     return this.http
       .post<Category>(createApiPath(CategoriesPath), category);
@@ -29,6 +37,6 @@ export class CategoryService {
 
   delete$(category: Category): Observable<Category> {
     return this.http
-      .delete<Category>(createApiPath('category', category.id.toString()));
+      .delete<Category>(createApiPath(CategoriesPath, category.id.toString()));
   }
 }
