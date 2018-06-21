@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 import { Context } from 'src/app/models/context';
 import { Router } from '@angular/router';
 import { createApiPath } from '../utils';
 import { sha256 } from 'js-sha256';
-import { filter } from 'rxjs/operators';
+
+const SessionsPath = 'sessions';
+const UsersPath = 'users';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +38,7 @@ export class AuthService {
   }
 
   login$({username, password}: { username: string; password: string; }): Observable<{ token: string; }> {
-    return this.http.post<{ token: string; }>(createApiPath('session'), {
+    return this.http.post<{ token: string; }>(createApiPath(SessionsPath), {
       username,
       password: sha256(password)
     }).pipe(
@@ -49,7 +51,7 @@ export class AuthService {
   }
 
   register$({username, password}: { username: string; password: string; }): Observable<any> {
-    return this.http.post(createApiPath('user'), {
+    return this.http.post(createApiPath(UsersPath), {
       username,
       password: sha256(password)
     });

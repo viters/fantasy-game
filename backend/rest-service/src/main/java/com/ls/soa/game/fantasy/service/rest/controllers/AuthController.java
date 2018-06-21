@@ -5,10 +5,8 @@ import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.service.rest.models.AuthCredentials;
 import com.ls.soa.game.fantasy.service.rest.models.TokenCredentials;
-import com.ls.soa.game.fantasy.service.rest.services.ErrorManager;
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("session")
+@Path("sessions")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthController extends Controller {

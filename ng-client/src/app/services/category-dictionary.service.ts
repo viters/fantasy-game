@@ -5,6 +5,8 @@ import { createApiPath } from '../utils';
 import { CategoryDictionary } from '../models/category-dictionary';
 import { filter } from 'rxjs/operators';
 
+const CategoryDictionariesPath = 'category-dictionaries';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +21,7 @@ export class CategoryDictionaryService {
   }
 
   fetch() {
-    this.http.get<CategoryDictionary[]>(createApiPath('category-dictionary'))
+    this.http.get<CategoryDictionary[]>(createApiPath(CategoryDictionariesPath))
       .subscribe(x => this._dictionaries$.next(x));
   }
 }
