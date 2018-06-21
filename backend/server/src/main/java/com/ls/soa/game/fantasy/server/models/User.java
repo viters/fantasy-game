@@ -43,9 +43,11 @@ public class User implements Serializable {
     private String role;
 
     @OneToMany(targetEntity = Category.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "author_id")
     private List<Category> categories;
 
     @OneToMany(targetEntity = Element.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "author_id")
     private List<Element> elements;
 
     @PrePersist()
@@ -70,6 +72,10 @@ public class User implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getUsername() {

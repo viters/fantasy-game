@@ -3,12 +3,13 @@ import { LoginComponent } from 'src/app/components/login/login.component';
 import { OnlyUserGuard } from './services/only-user.guard';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { RegisterComponent } from './components/register/register.component';
+import { CategoriesComponent } from './components/categories/categories.component';
 
 const routes: Routes = [
   {
     path: '', canActivate: [OnlyUserGuard], component: DashboardComponent, children: [
       {path: 'elements', redirectTo: ''},
-      {path: 'categories', redirectTo: ''},
+      {path: 'categories', component: CategoriesComponent},
       {path: 'metadata', redirectTo: ''},
     ],
   },

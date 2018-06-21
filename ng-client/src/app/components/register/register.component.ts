@@ -32,8 +32,9 @@ export class RegisterComponent implements OnInit {
 
     this.authService.register$(this.registerForm.value).subscribe(
       () => {
-        this.snackBar.open('Account was successfully created', 'Go to login page')
-          .onAction().subscribe(() => this.router.navigateByUrl('/login'));
+        this.snackBar.open('Account was successfully created', 'Go to login page', {
+          duration: 3000,
+        }).onAction().subscribe(() => this.router.navigateByUrl('/login'));
       },
     );
   }

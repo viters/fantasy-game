@@ -6,30 +6,35 @@ import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.server.models.Category;
 import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
 import com.ls.soa.game.fantasy.server.models.User;
+import org.hibernate.Session;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
 @SuppressWarnings("unchecked")
 public class CategoryDAO extends DAO {
-    @Inject
     private CategoryDictionaryDAO categoryDictionaryDAO;
 
-    @Inject
     private UserDAO userDAO;
 
-    public Category create(Category category, long categoryDictionaryId, long userId) throws CategoryDictionaryNotFoundException, UserNotFoundException {
-        Optional<CategoryDictionary> categoryDictionary = categoryDictionaryDAO.findById(categoryDictionaryId);
+    public CategoryDAO(Session session) {
+        super(session);
+        this.categoryDictionaryDAO = new CategoryDictionaryDAO(session);
+        this.userDAO = new UserDAO(session);
+    }
+
+    public Category createOrUpdate(Category category) throws CategoryDictionaryNotFoundException, UserNotFoundException {
+        Optional<CategoryDictionary> categoryDictionary = categoryDictionaryDAO.findById(category.getCategoryDictionaryId());
 
         if (!categoryDictionary.isPresent()) {
             throw new CategoryDictionaryNotFoundException();
         }
 
-        Optional<User> user = userDAO.findById(userId);
+        Optional<User> user = userDAO.findById(category.getAuthorId());
 
         if (!user.isPresent()) {
             throw new UserNotFoundException();
@@ -38,7 +43,7 @@ public class CategoryDAO extends DAO {
         session.getTransaction().begin();
         category.setCategoryDictionary(categoryDictionary.get());
         category.setAuthor(user.get());
-        session.save(category);
+        session.saveOrUpdate(category);
         session.getTransaction().commit();
 
         return category;
@@ -65,23 +70,6 @@ public class CategoryDAO extends DAO {
         return (List<Category>) session.getNamedNativeQuery("getAllCategories")
                 .getResultStream()
                 .collect(Collectors.toList());
-    }
-
-    public Category update(Category newCategory) throws CategoryNotFoundException {
-        Optional<Category> oldCategory = findById(newCategory.getId());
-
-        if (!oldCategory.isPresent()) {
-            throw new CategoryNotFoundException();
-        }
-
-        Category entity = oldCategory.get();
-        entity.merge(newCategory);
-
-        session.getTransaction().begin();
-        session.update(entity);
-        session.getTransaction().commit();
-
-        return entity;
     }
 
     public void delete(long categoryId) throws CategoryNotFoundException {

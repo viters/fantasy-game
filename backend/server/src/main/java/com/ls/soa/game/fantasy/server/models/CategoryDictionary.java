@@ -48,6 +48,7 @@ public class CategoryDictionary implements Serializable {
     private String elementParam4Name;
 
     @OneToMany(targetEntity = Category.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "categorydictionary_id")
     private List<Category> categories;
 
     public CategoryDictionary() {
@@ -67,6 +68,10 @@ public class CategoryDictionary implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getCategoryName() {

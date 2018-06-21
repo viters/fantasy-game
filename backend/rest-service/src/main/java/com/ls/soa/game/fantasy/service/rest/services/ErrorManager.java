@@ -14,6 +14,8 @@ public class ErrorManager {
         errors.put("username-invalid", new ErrorResponse("username-invalid", "User with provided username was not found"));
         errors.put("password-invalid", new ErrorResponse("password-invalid", "Password provided for given user was invalid"));
         errors.put("username-taken", new ErrorResponse("username-taken", "User with provided username already exists"));
+        errors.put("invalid-category-dictionary", new ErrorResponse("invalid-category-dictionary", "Category dictionary not found"));
+        errors.put("invalid-category", new ErrorResponse("invalid-category-dictionary", "Category not found"));
     }
 
     public Map<String, ErrorResponse> getErrors() {

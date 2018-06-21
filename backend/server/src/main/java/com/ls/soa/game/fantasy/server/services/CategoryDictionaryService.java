@@ -2,64 +2,93 @@ package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.CategoryDictionaryNotFoundException;
 import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
+import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.models.CategoryDictionaryDTO;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryDictionaryService;
 import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
+import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
+import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.ICategoryDictionaryService.class)
 public class CategoryDictionaryService extends Service implements ICategoryDictionaryService {
-    @Inject
-    private CategoryDictionaryDAO categoryDictionaryDAO;
-
     @Override
-    public CategoryDictionaryDTO create(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException {
+    public CategoryDictionaryDTO create(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
-        CategoryDictionary categoryDictionary = map(categoryDictionaryDTO, CategoryDictionary.class);
-        categoryDictionaryDAO.create(categoryDictionary);
+        Session session = dbConnectionUtil.createSession();
+        CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
 
-        return map(categoryDictionary, CategoryDictionaryDTO.class);
+        CategoryDictionary categoryDictionary = map(categoryDictionaryDTO, CategoryDictionary.class);
+        categoryDictionaryDAO.createOrUpdate(categoryDictionary);
+
+        CategoryDictionaryDTO dto = map(categoryDictionary, CategoryDictionaryDTO.class);
+        session.close();
+        return dto;
     }
 
     @Override
-    public List<CategoryDictionaryDTO> getAll(String token) throws InsufficientPermissionsException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
-            throw new InsufficientPermissionsException();
-        }
+    public List<CategoryDictionaryDTO> getAll(String token) throws InvalidTokenException {
+        tokenUtil.validateToken(token);
+
+        Session session = dbConnectionUtil.createSession();
+        CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
 
         List<CategoryDictionary> categoryDictionaries = categoryDictionaryDAO.getAll();
 
-        return categoryDictionaries.stream().map(c -> map(c, CategoryDictionaryDTO.class)).collect(Collectors.toList());
+        List<CategoryDictionaryDTO> categoryDictionaryDTOS =
+                categoryDictionaries.stream().map(c -> map(c, CategoryDictionaryDTO.class)).collect(Collectors.toList());
+        session.close();
+        return categoryDictionaryDTOS;
     }
 
     @Override
-    public CategoryDictionaryDTO update(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException {
+    public CategoryDictionaryDTO update(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
-        CategoryDictionary categoryDictionary = map(categoryDictionaryDTO, CategoryDictionary.class);
-        categoryDictionaryDAO.update(categoryDictionary);
+        Session session = dbConnectionUtil.createSession();
+        CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
 
-        return map(categoryDictionary, CategoryDictionaryDTO.class);
+        CategoryDictionary newCategoryDictionary = map(categoryDictionaryDTO, CategoryDictionary.class);
+
+        Optional<CategoryDictionary> oldCategoryDictionary = categoryDictionaryDAO.findById(newCategoryDictionary.getId());
+
+        if (!oldCategoryDictionary.isPresent()) {
+            session.close();
+            throw new CategoryDictionaryNotFoundException();
+        }
+
+        CategoryDictionary entity = oldCategoryDictionary.get();
+        entity.merge(newCategoryDictionary);
+
+        categoryDictionaryDAO.createOrUpdate(entity);
+
+        CategoryDictionaryDTO dto = map(entity, CategoryDictionaryDTO.class);
+        session.close();
+        return dto;
     }
 
     @Override
-    public void delete(String token, long categoryDictionaryId) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException {
+    public void delete(String token, long categoryDictionaryId) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
+        Session session = dbConnectionUtil.createSession();
+        CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
 
         categoryDictionaryDAO.delete(categoryDictionaryId);
+        session.close();
     }
 }

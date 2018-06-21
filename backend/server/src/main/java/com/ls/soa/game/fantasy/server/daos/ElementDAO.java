@@ -6,19 +6,25 @@ import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.server.models.Category;
 import com.ls.soa.game.fantasy.server.models.Element;
 import com.ls.soa.game.fantasy.server.models.User;
+import org.hibernate.Session;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public class ElementDAO extends DAO {
-    @Inject
     private CategoryDAO categoryDAO;
-
-    @Inject
     private UserDAO userDAO;
+
+    public ElementDAO(Session session) {
+        super(session);
+        this.categoryDAO = new CategoryDAO(session);
+        this.userDAO = new UserDAO(session);
+    }
 
     public Optional<Element> findById(long id) {
         return session.getNamedNativeQuery("findElementById")
@@ -27,14 +33,14 @@ public class ElementDAO extends DAO {
                 .findFirst();
     }
 
-    public Element create(Element element, long categoryId, long userId) throws CategoryDictionaryNotFoundException, UserNotFoundException {
-        Optional<Category> category = categoryDAO.findById(categoryId);
+    public Element createOrUpdate(Element element) throws CategoryDictionaryNotFoundException, UserNotFoundException {
+        Optional<Category> category = categoryDAO.findById(element.getCategoryId());
 
         if (!category.isPresent()) {
             throw new CategoryDictionaryNotFoundException();
         }
 
-        Optional<User> user = userDAO.findById(userId);
+        Optional<User> user = userDAO.findById(element.getAuthorId());
 
         if (!user.isPresent()) {
             throw new UserNotFoundException();
@@ -43,7 +49,7 @@ public class ElementDAO extends DAO {
         session.getTransaction().begin();
         element.setCategory(category.get());
         element.setAuthor(user.get());
-        session.save(element);
+        session.saveOrUpdate(element);
         session.getTransaction().commit();
 
         return element;
@@ -63,23 +69,6 @@ public class ElementDAO extends DAO {
         return (List<Element>) session.getNamedNativeQuery("getAllElements")
                 .getResultStream()
                 .collect(Collectors.toList());
-    }
-
-    public Element update(Element newElement) throws ElementNotFoundException {
-        Optional<Element> oldElement = findById(newElement.getId());
-
-        if (!oldElement.isPresent()) {
-            throw new ElementNotFoundException();
-        }
-
-        Element entity = oldElement.get();
-        entity.merge(newElement);
-
-        session.getTransaction().begin();
-        session.update(entity);
-        session.getTransaction().commit();
-
-        return entity;
     }
 
     public void delete(long elementId) throws ElementNotFoundException {

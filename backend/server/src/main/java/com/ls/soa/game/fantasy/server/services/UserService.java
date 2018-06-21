@@ -1,54 +1,82 @@
 package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
+import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.api.server.models.Role;
+import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IUserService;
+import com.ls.soa.game.fantasy.server.daos.ElementDAO;
 import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.User;
+import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Optional;
 
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.IUserService.class)
 public class UserService extends Service implements IUserService {
-    @Inject
-    private UserDAO userDAO;
-
     @Override
-    public UserDTO create(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException {
+    public UserDTO create(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
+
+        Session session = dbConnectionUtil.createSession();
+        UserDAO userDAO = new UserDAO(session);
 
         User user = new User(username, password, Role.valueOf(role));
-        userDAO.create(user);
+        userDAO.createOrUpdate(user);
 
-        return map(user, UserDTO.class);
+        UserDTO dto = map(user, UserDTO.class);
+        session.close();
+        return dto;
     }
 
     @Override
-    public UserDTO update(String token, UserDTO userDTO) throws InsufficientPermissionsException, UserNotFoundException, UserAlreadyExistsException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+    public UserDTO update(String token, UserDTO userDTO) throws InsufficientPermissionsException, UserNotFoundException, UserAlreadyExistsException, InvalidTokenException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+
+        if (!(metadata.isAdmin() || userDTO.getId() == metadata.getUserId())) {
             throw new InsufficientPermissionsException();
         }
 
-        User user = map(userDTO, User.class);
-        userDAO.update(user);
+        Session session = dbConnectionUtil.createSession();
+        UserDAO userDAO = new UserDAO(session);
 
-        return map(user, UserDTO.class);
+        User newUser = map(userDTO, User.class);
+
+        Optional<User> oldUser = userDAO.findById(newUser.getId());
+
+        if (!oldUser.isPresent()) {
+            session.close();
+            throw new UserNotFoundException();
+        }
+
+        User entity = oldUser.get();
+        entity.merge(newUser);
+
+        userDAO.createOrUpdate(entity);
+
+        UserDTO result = map(entity, UserDTO.class);
+        session.close();
+        return result;
     }
 
     @Override
-    public void delete(String token, long userId) throws InsufficientPermissionsException, UserNotFoundException {
+    public void delete(String token, long userId) throws InsufficientPermissionsException, UserNotFoundException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
+        Session session = dbConnectionUtil.createSession();
+        UserDAO userDAO = new UserDAO(session);
 
         userDAO.delete(userId);
+        session.close();
     }
 }

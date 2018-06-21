@@ -7,13 +7,9 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 abstract class DAO {
-    @Inject
-    private DBConnectionUtil dbConnectionUtil;
+    Session session;
 
-    protected Session session;
-
-    @PostConstruct
-    private void init() {
-        session = dbConnectionUtil.getSession();
+    public DAO(Session session) {
+        this.session = session;
     }
 }

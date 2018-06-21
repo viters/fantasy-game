@@ -1,7 +1,10 @@
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgModule } from '@angular/core';
 import {
-  MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSidenavModule, MatSnackBarModule,
+  MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSelectModule,
+  MatSidenavModule,
+  MatSnackBarModule,
+  MatTableModule,
   MatToolbarModule,
 } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,11 +16,14 @@ import { LoginComponent } from './components/login/login.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRouter } from './app.router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RegisterComponent } from './components/register/register.component';
 import { HttpErrorInterceptor } from './services/http-error.interceptor';
 import { AuthTokenInterceptor } from './services/auth-token.interceptor';
 import { AuthService } from './services/auth.service';
+import { CategoriesComponent } from './components/categories/categories.component';
+import { CategoryFormComponent } from './components/categories/category-form/category-form.component';
+import { CategoryMetadataPipe } from './pipes/category-metadata.pipe';
 
 @NgModule({
   declarations: [
@@ -26,6 +32,9 @@ import { AuthService } from './services/auth.service';
     LoginComponent,
     DashboardComponent,
     RegisterComponent,
+    CategoriesComponent,
+    CategoryFormComponent,
+    CategoryMetadataPipe,
   ],
   imports: [
     BrowserModule,
@@ -35,12 +44,16 @@ import { AuthService } from './services/auth.service';
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
+    MatTableModule,
+    MatDialogModule,
     MatListModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
+    MatSelectModule,
     ReactiveFormsModule,
+    FormsModule,
     HttpClientModule,
     AppRouter,
   ],
@@ -48,6 +61,9 @@ import { AuthService } from './services/auth.service';
     AuthService,
     {provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true},
+  ],
+  entryComponents: [
+    CategoryFormComponent,
   ],
   bootstrap: [AppComponent],
 })

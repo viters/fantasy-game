@@ -18,25 +18,20 @@ import javax.ws.rs.core.Response;
 @Path("user")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class UserController {
+public class UserController extends Controller {
     @EJB(mappedName = "java:global/server/AuthService!com.ls.soa.game.fantasy.api.server.services.IAuthService")
     private IAuthService authService;
-
-    @Inject
-    private ErrorManager errorManager;
 
     @POST
     public Response register(AuthCredentials authCredentials) {
         try {
-            UserDTO user = this.authService.register(authCredentials.getUsername(), authCredentials.getPassword());
+            UserDTO user = this.authService.register(authCredentials.username, authCredentials.password);
 
             System.out.println("Created user with ID: " + user.getId());
 
             return Response.status(Response.Status.CREATED).build();
         } catch (UserAlreadyExistsException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(errorManager.getErrors().get("username-taken"))
-                    .build();
+            return buildErrorResponse("username-taken");
         }
     }
 }

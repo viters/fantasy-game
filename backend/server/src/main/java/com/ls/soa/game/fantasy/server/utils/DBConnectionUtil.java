@@ -9,15 +9,14 @@ import javax.persistence.Persistence;
 
 @ApplicationScoped
 public class DBConnectionUtil {
-    private Session session;
+    private EntityManagerFactory entityManagerFactory;
 
     @PostConstruct
     public void init() {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("fantasy");
-        session = entityManagerFactory.createEntityManager().unwrap(Session.class);
+        entityManagerFactory = Persistence.createEntityManagerFactory("fantasy");
     }
 
-    public Session getSession() {
-        return session;
+    public Session createSession() {
+        return entityManagerFactory.createEntityManager().unwrap(Session.class);
     }
 }

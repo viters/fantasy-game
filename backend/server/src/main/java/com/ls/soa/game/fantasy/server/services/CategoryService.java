@@ -1,14 +1,13 @@
 package com.ls.soa.game.fantasy.server.services;
 
-import com.ls.soa.game.fantasy.api.server.exceptions.CategoryDictionaryNotFoundException;
-import com.ls.soa.game.fantasy.api.server.exceptions.CategoryNotFoundException;
-import com.ls.soa.game.fantasy.api.server.exceptions.InsufficientPermissionsException;
-import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
+import com.ls.soa.game.fantasy.api.server.exceptions.*;
 import com.ls.soa.game.fantasy.api.server.models.CategoryDTO;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryService;
 import com.ls.soa.game.fantasy.server.daos.CategoryDAO;
+import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
 import com.ls.soa.game.fantasy.server.models.Category;
-import com.ls.soa.game.fantasy.server.models.TokenMetadata;
+import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
+import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -20,66 +19,107 @@ import java.util.stream.Collectors;
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.ICategoryService.class)
 public class CategoryService extends Service implements ICategoryService {
-    @Inject
-    private CategoryDAO categoryDAO;
-
     @Override
-    public CategoryDTO create(int param1, int categoryDictionaryId, String token) throws UserNotFoundException, CategoryDictionaryNotFoundException {
-        TokenMetadata metadata = tokenUtil.validateToken(token);
+    public CategoryDTO create(String token, CategoryDTO categoryDTO) throws UserNotFoundException, CategoryDictionaryNotFoundException, InvalidTokenException, InsufficientPermissionsException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
 
-        Category category = new Category(param1);
-        categoryDAO.create(category, categoryDictionaryId, metadata.getUserId());
+        Category category = map(categoryDTO, Category.class);
+        if (category.getAuthorId() != 0 && category.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
+            throw new InsufficientPermissionsException();
+        } else {
+            category.setAuthorId(metadata.getUserId());
+        }
 
-        return map(category, CategoryDTO.class);
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
+
+        categoryDAO.createOrUpdate(category);
+
+        CategoryDTO result = map(category, CategoryDTO.class);
+        session.close();
+        return result;
     }
 
     @Override
-    public List<CategoryDTO> getAllForUser(String token) throws UserNotFoundException {
-        TokenMetadata metadata = tokenUtil.validateToken(token);
+    public List<CategoryDTO> getAllForUser(String token) throws UserNotFoundException, InvalidTokenException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
+
         List<Category> categories = categoryDAO.getAllForUser(metadata.getUserId());
 
-        return categories.stream().map(c -> map(c, CategoryDTO.class)).collect(Collectors.toList());
+        List<CategoryDTO> categoryDTOS = categories.stream().map(c -> map(c, CategoryDTO.class)).collect(Collectors.toList());
+        session.close();
+        return categoryDTOS;
     }
 
     @Override
-    public List<CategoryDTO> getAll(String token) throws InsufficientPermissionsException {
+    public List<CategoryDTO> getAll(String token) throws InsufficientPermissionsException, InvalidTokenException {
         if (!tokenUtil.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
+
         List<Category> categories = categoryDAO.getAll();
 
-        return categories.stream().map(c -> map(c, CategoryDTO.class)).collect(Collectors.toList());
+        List<CategoryDTO> categoryDTOS = categories.stream().map(c -> map(c, CategoryDTO.class)).collect(Collectors.toList());
+        session.close();
+        return categoryDTOS;
     }
 
     @Override
-    public CategoryDTO update(String token, CategoryDTO categoryDTO) throws InsufficientPermissionsException, CategoryNotFoundException {
-        TokenMetadata metadata = tokenUtil.validateToken(token);
+    public CategoryDTO update(String token, CategoryDTO categoryDTO) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException, UserNotFoundException, CategoryDictionaryNotFoundException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
 
-        if (!(metadata.isAdmin() || categoryDTO.getAuthor().getId() == metadata.getUserId())) {
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
+
+        Category newCategory = map(categoryDTO, Category.class);
+
+        Optional<Category> oldCategory = categoryDAO.findById(newCategory.getId());
+
+        if (!oldCategory.isPresent()) {
+            session.close();
+            throw new CategoryNotFoundException();
+        }
+
+        Category entity = oldCategory.get();
+
+        if (!(metadata.isAdmin() || entity.getAuthorId() == metadata.getUserId())) {
             throw new InsufficientPermissionsException();
         }
 
-        Category category = map(categoryDTO, Category.class);
-        categoryDAO.update(category);
+        entity.merge(newCategory);
+        categoryDAO.createOrUpdate(entity);
 
-        return map(category, CategoryDTO.class);
+        CategoryDTO result = map(entity, CategoryDTO.class);
+        session.close();
+        return result;
     }
 
     @Override
-    public void delete(String token, long categoryId) throws InsufficientPermissionsException, CategoryNotFoundException {
-        TokenMetadata metadata = tokenUtil.validateToken(token);
+    public void delete(String token, long categoryId) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
 
         Optional<Category> category = categoryDAO.findById(categoryId);
 
         if (!category.isPresent()) {
+            session.close();
             throw new CategoryNotFoundException();
         }
 
         if (!(metadata.isAdmin() || category.get().getAuthor().getId() == metadata.getUserId())) {
+            session.close();
             throw new InsufficientPermissionsException();
         }
 
         categoryDAO.delete(category.get());
+        session.close();
     }
 }

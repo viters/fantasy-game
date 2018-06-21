@@ -36,11 +36,17 @@ public class Element implements Serializable {
     @Column(name = "param4")
     private int param4;
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User author;
 
-    @ManyToOne(targetEntity = Category.class)
+    @Column(name = "author_id", insertable = false, updatable = false)
+    private long authorId;
+
+    @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     private Category category;
+
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private long categoryId;
 
     public Element() {
     }
@@ -54,6 +60,10 @@ public class Element implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getParam1() {
@@ -102,6 +112,22 @@ public class Element implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
+    }
+
+    public long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void merge(Element element) {

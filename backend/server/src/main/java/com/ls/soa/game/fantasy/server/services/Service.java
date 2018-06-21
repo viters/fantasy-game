@@ -1,5 +1,6 @@
 package com.ls.soa.game.fantasy.server.services;
 
+import com.ls.soa.game.fantasy.server.utils.DBConnectionUtil;
 import com.ls.soa.game.fantasy.server.utils.MapperUtil;
 import com.ls.soa.game.fantasy.server.utils.TokenUtil;
 
@@ -11,6 +12,9 @@ abstract class Service {
 
     @Inject
     private MapperUtil mapperUtil;
+
+    @Inject
+    protected DBConnectionUtil dbConnectionUtil;
 
     protected <T> T map(Object a, Class<T> b) {
         return mapperUtil.getMapper().map(a, b);

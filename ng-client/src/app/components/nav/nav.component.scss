@@ -1,5 +1,7 @@
-.sidenav-container {
-  height: 100%;
+.mat-sidenav-content {
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-bottom: 2rem;
 }
 
 .sidenav {

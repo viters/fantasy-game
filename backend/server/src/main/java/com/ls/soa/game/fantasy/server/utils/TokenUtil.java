@@ -1,6 +1,7 @@
 package com.ls.soa.game.fantasy.server.utils;
 
-import com.ls.soa.game.fantasy.server.models.TokenMetadata;
+import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
+import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import io.jsonwebtoken.*;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -25,16 +26,20 @@ public class TokenUtil {
                 .compact();
     }
 
-    public TokenMetadata validateToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
-        Claims claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token).getBody();
-        String id = claims.getSubject();
-        String role = claims.get("role").toString();
+    public TokenMetadataDTO validateToken(String token) throws InvalidTokenException {
+        try {
+            Claims claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token).getBody();
+            String id = claims.getSubject();
+            String role = claims.get("role").toString();
 
-        Jwts.parser()
-                .requireSubject(claims.getSubject())
-                .setSigningKey(signingKey)
-                .parseClaimsJws(token);
+            Jwts.parser()
+                    .requireSubject(claims.getSubject())
+                    .setSigningKey(signingKey)
+                    .parseClaimsJws(token);
 
-        return new TokenMetadata(id, role);
+            return new TokenMetadataDTO(id, role);
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
     }
 }

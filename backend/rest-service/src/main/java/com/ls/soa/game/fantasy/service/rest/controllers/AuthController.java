@@ -19,28 +19,21 @@ import javax.ws.rs.core.Response;
 @Path("session")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class AuthController {
+public class AuthController extends Controller {
     @EJB(mappedName = "java:global/server/AuthService!com.ls.soa.game.fantasy.api.server.services.IAuthService")
     private IAuthService authService;
-
-    @Inject
-    private ErrorManager errorManager;
 
     @POST
     public Response login(AuthCredentials authCredentials) {
         try {
-            String token = authService.login(authCredentials.getUsername(), authCredentials.getPassword());
+            String token = authService.login(authCredentials.username, authCredentials.password);
             TokenCredentials tokenCredentials = new TokenCredentials(token);
 
             return Response.ok(tokenCredentials).build();
         } catch (UserNotFoundException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(errorManager.getErrors().get("username-invalid"))
-                    .build();
+            return buildErrorResponse("username-invalid");
         } catch (IncorrectPasswordException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(errorManager.getErrors().get("password-invalid"))
-                    .build();
+            return buildErrorResponse("password-invalid");
         }
     }
 }

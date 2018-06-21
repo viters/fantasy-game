@@ -2,14 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, tap } from 'rxjs/operators';
-import { User } from 'src/app/models/user';
+import { Context } from 'src/app/models/context';
 import { Router } from '@angular/router';
 import { createApiPath } from '../utils';
 import { sha256 } from 'js-sha256';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
-  private _userContext$ = new BehaviorSubject<User>(null);
+  private _userContext$ = new BehaviorSubject<Context>(null);
 
   constructor(private http: HttpClient,
               private router: Router) {
@@ -23,8 +24,8 @@ export class AuthService {
     });
   }
 
-  get userContext$(): Observable<User> {
-    return this._userContext$.asObservable();
+  get userContext$(): Observable<Context> {
+    return this._userContext$.pipe(filter(Boolean));
   }
 
   get isLogged$(): Observable<boolean> {
@@ -40,7 +41,7 @@ export class AuthService {
       password: sha256(password)
     }).pipe(
       tap((res) => {
-        const user: User = {credentials: {token: res.token}, username};
+        const user: Context = {credentials: {token: res.token}, username};
         this._userContext$.next(user);
       }),
       tap(() => this.router.navigateByUrl('/')),

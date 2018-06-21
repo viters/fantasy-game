@@ -28,13 +28,20 @@ public class Category implements Serializable {
     @Column(name = "param1")
     private int param1;
 
-    @ManyToOne(targetEntity = CategoryDictionary.class)
+    @ManyToOne(targetEntity = CategoryDictionary.class, fetch = FetchType.LAZY)
     private CategoryDictionary categoryDictionary;
 
-    @ManyToOne(targetEntity = User.class)
+    @Column(name = "categorydictionary_id", insertable = false, updatable = false)
+    private long categoryDictionaryId;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User author;
 
+    @Column(name = "author_id", insertable = false, updatable = false)
+    private long authorId;
+
     @OneToMany(targetEntity = Element.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "category_id")
     private List<Element> elements;
 
     public Category() {
@@ -46,6 +53,10 @@ public class Category implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getParam1() {
@@ -74,6 +85,22 @@ public class Category implements Serializable {
 
     public List<Element> getElements() {
         return elements;
+    }
+
+    public long getCategoryDictionaryId() {
+        return categoryDictionaryId;
+    }
+
+    public void setCategoryDictionaryId(long categoryDictionaryId) {
+        this.categoryDictionaryId = categoryDictionaryId;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(long authorId) {
+        this.authorId = authorId;
     }
 
     public void merge(Category category) {
