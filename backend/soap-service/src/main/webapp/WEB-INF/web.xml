@@ -1,0 +1,33 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <servlet>
+        <servlet-name>AuthService</servlet-name>
+        <servlet-class>com.ls.soa.game.fantasy.service.soap.AuthServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CategoryDictionaryService</servlet-name>
+        <servlet-class>com.ls.soa.game.fantasy.service.soap.CategoryDictionaryServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ElementService</servlet-name>
+        <servlet-class>com.ls.soa.game.fantasy.service.soap.ElementServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AuthService</servlet-name>
+        <url-pattern>/AuthService</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CategoryDictionaryService</servlet-name>
+        <url-pattern>/CategoryDictionaryService</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ElementService</servlet-name>
+        <url-pattern>/ElementService</url-pattern>
+    </servlet-mapping>
+</web-app>
