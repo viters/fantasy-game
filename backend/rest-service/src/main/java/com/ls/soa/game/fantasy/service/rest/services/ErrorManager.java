@@ -18,6 +18,7 @@ public class ErrorManager {
         errors.put("invalid-category", new ErrorResponse("invalid-category-dictionary", "Category not found"));
         errors.put("invalid-element", new ErrorResponse("invalid-category-dictionary", "Element not found"));
         errors.put("unauthorized", new ErrorResponse("unauthorized", "Unauthorized to perform action"));
+        errors.put("invalid-element-param", new ErrorResponse("invalid-element-param", "Invalid element param selected"));
     }
 
     public Map<String, ErrorResponse> getErrors() {

@@ -1,12 +1,15 @@
 package com.ls.soa.game.fantasy.api.server.models;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class UserDTO implements Serializable {
     private long id;
     private String username;
     private String role;
+    private List<CategoryDTO> categoryDTOList;
+    private List<ElementDTO> elementDTOList;
 
     public long getId() {
         return id;
@@ -30,6 +33,22 @@ public class UserDTO implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<CategoryDTO> getCategoryDTOList() {
+        return categoryDTOList;
+    }
+
+    public void setCategoryDTOList(List<CategoryDTO> categoryDTOList) {
+        this.categoryDTOList = categoryDTOList;
+    }
+
+    public List<ElementDTO> getElementDTOList() {
+        return elementDTOList;
+    }
+
+    public void setElementDTOList(List<ElementDTO> elementDTOList) {
+        this.elementDTOList = elementDTOList;
     }
 
     @Override

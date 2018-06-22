@@ -12,6 +12,8 @@ public interface ICategoryService {
 
     List<CategoryDTO> getAll(String token) throws InsufficientPermissionsException, InvalidTokenException;
 
+    CategoryDTO get(String token, long id) throws InsufficientPermissionsException, InvalidTokenException, CategoryNotFoundException;
+
     CategoryDTO update(String token, CategoryDTO categoryDTO) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException, UserNotFoundException, CategoryDictionaryNotFoundException;
 
     void delete(String token, long categoryId) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException;

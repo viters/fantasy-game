@@ -1,13 +1,17 @@
 package com.ls.soa.game.fantasy.api.server.models;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class CategoryDTO implements Serializable {
     private long id;
     private int param1;
-    private long authorId;
-    private long categoryDictionaryId;
+    private Long authorId;
+    private Long categoryDictionaryId;
+    private UserDTO authorDTO;
+    private CategoryDictionaryDTO categoryDictionaryDTO;
+    private List<ElementDTO> elementDTOList;
 
     public long getId() {
         return id;
@@ -39,6 +43,38 @@ public class CategoryDTO implements Serializable {
 
     public void setCategoryDictionaryId(long categoryDictionaryId) {
         this.categoryDictionaryId = categoryDictionaryId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
+    public void setCategoryDictionaryId(Long categoryDictionaryId) {
+        this.categoryDictionaryId = categoryDictionaryId;
+    }
+
+    public UserDTO getAuthorDTO() {
+        return authorDTO;
+    }
+
+    public void setAuthorDTO(UserDTO authorDTO) {
+        this.authorDTO = authorDTO;
+    }
+
+    public CategoryDictionaryDTO getCategoryDictionaryDTO() {
+        return categoryDictionaryDTO;
+    }
+
+    public void setCategoryDictionaryDTO(CategoryDictionaryDTO categoryDictionaryDTO) {
+        this.categoryDictionaryDTO = categoryDictionaryDTO;
+    }
+
+    public List<ElementDTO> getElementDTOList() {
+        return elementDTOList;
+    }
+
+    public void setElementDTOList(List<ElementDTO> elementDTOList) {
+        this.elementDTOList = elementDTOList;
     }
 
     @Override

@@ -9,9 +9,12 @@ public class ElementDTO implements Serializable {
     private int param2;
     private int param3;
     private int param4;
-    private long authorId;
-    private long categoryId;
-    private long categoryDictionaryId;
+    private Long authorId;
+    private Long categoryId;
+    private Long categoryDictionaryId;
+    private UserDTO authorDTO;
+    private CategoryDictionaryDTO categoryDictionaryDTO;
+    private CategoryDTO categoryDTO;
 
     public long getId() {
         return id;
@@ -53,28 +56,52 @@ public class ElementDTO implements Serializable {
         this.param4 = param4;
     }
 
-    public long getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(long authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
-    public long getCategoryDictionaryId() {
+    public Long getCategoryDictionaryId() {
         return categoryDictionaryId;
     }
 
-    public void setCategoryDictionaryId(long categoryDictionaryId) {
+    public void setCategoryDictionaryId(Long categoryDictionaryId) {
         this.categoryDictionaryId = categoryDictionaryId;
+    }
+
+    public UserDTO getAuthorDTO() {
+        return authorDTO;
+    }
+
+    public void setAuthorDTO(UserDTO authorDTO) {
+        this.authorDTO = authorDTO;
+    }
+
+    public CategoryDictionaryDTO getCategoryDictionaryDTO() {
+        return categoryDictionaryDTO;
+    }
+
+    public void setCategoryDictionaryDTO(CategoryDictionaryDTO categoryDictionaryDTO) {
+        this.categoryDictionaryDTO = categoryDictionaryDTO;
+    }
+
+    public CategoryDTO getCategoryDTO() {
+        return categoryDTO;
+    }
+
+    public void setCategoryDTO(CategoryDTO categoryDTO) {
+        this.categoryDTO = categoryDTO;
     }
 
     @Override

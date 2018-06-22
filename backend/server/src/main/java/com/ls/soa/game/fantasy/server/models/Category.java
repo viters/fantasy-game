@@ -31,14 +31,14 @@ public class Category implements Serializable {
     @ManyToOne(targetEntity = CategoryDictionary.class, fetch = FetchType.LAZY)
     private CategoryDictionary categoryDictionary;
 
-    @Column(name = "categorydictionary_id", insertable = false, updatable = false)
-    private long categoryDictionaryId;
+    @Column(name = "categorydictionary_id", insertable = false, updatable = false, nullable = true)
+    private Long categoryDictionaryId;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User author;
 
-    @Column(name = "author_id", insertable = false, updatable = false)
-    private long authorId;
+    @Column(name = "author_id", insertable = false, updatable = false, nullable = true)
+    private Long authorId;
 
     @OneToMany(targetEntity = Element.class, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "category_id")
@@ -87,19 +87,19 @@ public class Category implements Serializable {
         return elements;
     }
 
-    public long getCategoryDictionaryId() {
+    public Long getCategoryDictionaryId() {
         return categoryDictionaryId;
     }
 
-    public void setCategoryDictionaryId(long categoryDictionaryId) {
+    public void setCategoryDictionaryId(Long categoryDictionaryId) {
         this.categoryDictionaryId = categoryDictionaryId;
     }
 
-    public long getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(long authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 

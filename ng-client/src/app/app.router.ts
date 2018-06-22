@@ -7,6 +7,7 @@ import { CategoriesComponent } from './components/categories/categories.componen
 import { ElementsComponent } from './components/elements/elements.component';
 import { MetadataComponent } from './components/metadata/metadata.component';
 import { OnlyAdminGuard } from './services/only-admin.guard';
+import { RankingsComponent } from './components/rankings/rankings.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       {path: 'elements', component: ElementsComponent},
       {path: 'categories', component: CategoriesComponent},
       {path: 'metadata', component: MetadataComponent, canActivate: [OnlyAdminGuard]},
+      {path: '', component: RankingsComponent},
     ],
   },
   {path: 'login', component: LoginComponent},

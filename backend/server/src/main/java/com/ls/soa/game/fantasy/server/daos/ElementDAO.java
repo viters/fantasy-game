@@ -2,6 +2,7 @@ package com.ls.soa.game.fantasy.server.daos;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.CategoryDictionaryNotFoundException;
 import com.ls.soa.game.fantasy.api.server.exceptions.ElementNotFoundException;
+import com.ls.soa.game.fantasy.api.server.exceptions.InvalidElementParamException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
 import com.ls.soa.game.fantasy.server.models.Category;
 import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
@@ -24,6 +25,28 @@ public class ElementDAO extends DAO {
         this.categoryDAO = new CategoryDAO(session);
         this.userDAO = new UserDAO(session);
         this.categoryDictionaryDAO = new CategoryDictionaryDAO(session);
+    }
+
+    public List<Element> getTopForParamByCategoryDictionary(String paramName, long categoryDictionaryId, int limit) throws InvalidElementParamException {
+        String namedNativeQueryName;
+        switch (paramName) {
+            case "param2":
+                namedNativeQueryName = "getTopForParam2ByCategoryDictionary";
+                break;
+            case "param3":
+                namedNativeQueryName = "getTopForParam3ByCategoryDictionary";
+                break;
+            case "param4":
+                namedNativeQueryName = "getTopForParam4ByCategoryDictionary";
+                break;
+            default:
+                throw new InvalidElementParamException();
+        }
+
+        return session.getNamedNativeQuery(namedNativeQueryName)
+                .setParameter("categoryDictionaryId", categoryDictionaryId)
+                .setParameter("limit", limit)
+                .getResultList();
     }
 
     public Optional<Element> findById(long id) {

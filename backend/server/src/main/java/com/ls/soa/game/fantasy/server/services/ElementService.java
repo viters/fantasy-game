@@ -1,17 +1,17 @@
 package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.*;
-import com.ls.soa.game.fantasy.api.server.models.ElementDTO;
+import com.ls.soa.game.fantasy.api.server.models.*;
 import com.ls.soa.game.fantasy.api.server.services.IElementService;
-import com.ls.soa.game.fantasy.server.daos.CategoryDAO;
+import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
 import com.ls.soa.game.fantasy.server.daos.ElementDAO;
+import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
 import com.ls.soa.game.fantasy.server.models.Element;
-import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +24,8 @@ public class ElementService extends Service implements IElementService {
         TokenMetadataDTO metadata = tokenUtil.validateToken(token);
 
         Element element = map(elementDTO, Element.class);
-        if (element.getAuthorId() != 0 && element.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
+        if (element.getAuthorId() != null && element.getAuthorId() != 0
+                && element.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
             throw new InsufficientPermissionsException();
         } else {
             element.setAuthorId(metadata.getUserId());
@@ -65,6 +66,33 @@ public class ElementService extends Service implements IElementService {
         List<Element> elements = elementDAO.getAll();
 
         List<ElementDTO> elementDTOS = elements.stream().map(c -> map(c, ElementDTO.class)).collect(Collectors.toList());
+        session.close();
+        return elementDTOS;
+    }
+
+    @Override
+    public List<ElementDTO> getTopForParamByCategoryDictionary(String token, String paramName, int limit) throws InvalidTokenException, InvalidElementParamException {
+        tokenUtil.validateToken(token);
+
+        Session session = dbConnectionUtil.createSession();
+        ElementDAO elementDAO = new ElementDAO(session);
+        CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
+
+        List<CategoryDictionary> categoryDictionaries = categoryDictionaryDAO.getAll();
+        List<Element> elements = new ArrayList<>();
+
+        for (CategoryDictionary categoryDictionary : categoryDictionaries) {
+            elements.addAll(elementDAO.getTopForParamByCategoryDictionary(paramName, categoryDictionary.getId(), limit));
+        }
+
+        List<ElementDTO> elementDTOS = elements.stream().map(c -> map(c, ElementDTO.class)).collect(Collectors.toList());
+
+        for (int i = 0; i < elements.size(); i++) {
+            elementDTOS.get(i).setAuthorDTO(map(elements.get(i).getAuthor(), UserDTO.class));
+            elementDTOS.get(i).setCategoryDictionaryDTO(map(elements.get(i).getCategoryDictionary(), CategoryDictionaryDTO.class));
+            elementDTOS.get(i).setCategoryDTO(map(elements.get(i).getCategory(), CategoryDTO.class));
+        }
+
         session.close();
         return elementDTOS;
     }

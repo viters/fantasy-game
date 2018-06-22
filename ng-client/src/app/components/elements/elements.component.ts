@@ -49,7 +49,7 @@ export class ElementsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((item: AppElement) => {
       if (item) {
-        this.elements[item.categoryDictionaryId] = R.concat(this.elements[item.categoryDictionaryId], [item]);
+        this.elements[item.categoryDictionaryId] = R.concat(this.elements[item.categoryDictionaryId] || [], [item]);
       }
     });
   }

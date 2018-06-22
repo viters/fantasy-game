@@ -1,17 +1,14 @@
 package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.*;
-import com.ls.soa.game.fantasy.api.server.models.CategoryDTO;
+import com.ls.soa.game.fantasy.api.server.models.*;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryService;
 import com.ls.soa.game.fantasy.server.daos.CategoryDAO;
-import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
 import com.ls.soa.game.fantasy.server.models.Category;
-import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +21,8 @@ public class CategoryService extends Service implements ICategoryService {
         TokenMetadataDTO metadata = tokenUtil.validateToken(token);
 
         Category category = map(categoryDTO, Category.class);
-        if (category.getAuthorId() != 0 && category.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
+        if (category.getAuthorId() != null && category.getAuthorId() != 0
+                && category.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
             throw new InsufficientPermissionsException();
         } else {
             category.setAuthorId(metadata.getUserId());
@@ -68,6 +66,35 @@ public class CategoryService extends Service implements ICategoryService {
         List<CategoryDTO> categoryDTOS = categories.stream().map(c -> map(c, CategoryDTO.class)).collect(Collectors.toList());
         session.close();
         return categoryDTOS;
+    }
+
+    @Override
+    public CategoryDTO get(String token, long id) throws InsufficientPermissionsException, InvalidTokenException, CategoryNotFoundException {
+        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+
+        Session session = dbConnectionUtil.createSession();
+        CategoryDAO categoryDAO = new CategoryDAO(session);
+
+        Optional<Category> category = categoryDAO.findById(id);
+
+        if (!category.isPresent()) {
+            throw new CategoryNotFoundException();
+        }
+
+        Category entity = category.get();
+
+        if (entity.getAuthorId() != metadata.getUserId() && !metadata.isAdmin()) {
+            throw new InsufficientPermissionsException();
+        }
+
+        CategoryDTO result = map(entity, CategoryDTO.class);
+
+        result.setAuthorDTO(map(entity.getAuthor(), UserDTO.class));
+        result.setCategoryDictionaryDTO(map(entity.getCategoryDictionary(), CategoryDictionaryDTO.class));
+        result.setElementDTOList(entity.getElements().stream().map(e -> map(e, ElementDTO.class)).collect(Collectors.toList()));
+
+        session.close();
+        return result;
     }
 
     @Override

@@ -39,7 +39,7 @@ export class CategoriesComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((item: Category) => {
       if (item) {
-        this.categories[item.categoryDictionaryId] = R.concat(this.categories[item.categoryDictionaryId], [item]);
+        this.categories[item.categoryDictionaryId] = R.concat(this.categories[item.categoryDictionaryId] || [], [item]);
       }
     });
   }

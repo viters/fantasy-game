@@ -35,6 +35,7 @@ import { ElementsComponent } from './components/elements/elements.component';
 import { ElementFormComponent } from './components/elements/elements-form/element-form.component';
 import { MetadataComponent } from './components/metadata/metadata.component';
 import { MetadataFormComponent } from './components/metadata/metadata-form/metadata-form.component';
+import { RankingsComponent } from './components/rankings/rankings.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { MetadataFormComponent } from './components/metadata/metadata-form/metad
     ElementFormComponent,
     MetadataComponent,
     MetadataFormComponent,
+    RankingsComponent,
   ],
   imports: [
     BrowserModule,

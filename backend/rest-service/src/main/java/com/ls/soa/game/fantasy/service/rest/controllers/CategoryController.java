@@ -30,6 +30,28 @@ public class CategoryController extends Controller {
         return Response.ok(categories).build();
     }
 
+    @GET
+    @Secured
+    @Path("{id}")
+    public Response get(@PathParam("id") String id, @Context SecurityContext securityContext) throws InvalidTokenException, InsufficientPermissionsException, CategoryNotFoundException {
+        String token = securityContext.getUserPrincipal().getName();
+
+        CategoryDTO categoryDTO = categoryService.get(token, Long.parseLong(id));
+
+        return Response.ok(categoryDTO).build();
+    }
+
+    @GET
+    @Secured
+    @Path("{id}/elements")
+    public Response elementsByCategory(@PathParam("id") String id, @Context SecurityContext securityContext) throws InvalidTokenException, InsufficientPermissionsException, CategoryNotFoundException {
+        String token = securityContext.getUserPrincipal().getName();
+
+        CategoryDTO categoryDTO = categoryService.get(token, Long.parseLong(id));
+
+        return Response.ok(categoryDTO.getElementDTOList()).build();
+    }
+
     @POST
     @Secured
     public Response create(CategoryDTO categoryDTO, @Context SecurityContext securityContext) throws UserNotFoundException, InvalidTokenException, InsufficientPermissionsException {

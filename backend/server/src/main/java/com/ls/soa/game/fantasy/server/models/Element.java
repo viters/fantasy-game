@@ -16,6 +16,33 @@ import java.util.Objects;
                 name = "findElementById",
                 query = "SELECT * FROM elements WHERE id = :id",
                 resultClass = Element.class
+        ),
+        @NamedNativeQuery(
+                name = "getTopForParam2ByCategoryDictionary",
+                query = "SELECT *\n" +
+                        "FROM elements\n" +
+                        "WHERE categorydictionary_id = :categoryDictionaryId\n" +
+                        "ORDER BY param2 DESC\n" +
+                        "LIMIT :limit\n",
+                resultClass = Element.class
+        ),
+        @NamedNativeQuery(
+                name = "getTopForParam3ByCategoryDictionary",
+                query = "SELECT *\n" +
+                        "FROM elements\n" +
+                        "WHERE categorydictionary_id = :categoryDictionaryId\n" +
+                        "ORDER BY param3 DESC\n" +
+                        "LIMIT :limit\n",
+                resultClass = Element.class
+        ),
+        @NamedNativeQuery(
+                name = "getTopForParam4ByCategoryDictionary",
+                query = "SELECT *\n" +
+                        "FROM elements\n" +
+                        "WHERE categorydictionary_id = :categoryDictionaryId\n" +
+                        "ORDER BY param4 DESC\n" +
+                        "LIMIT :limit\n",
+                resultClass = Element.class
         )
 })
 public class Element implements Serializable {
@@ -39,20 +66,20 @@ public class Element implements Serializable {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     private User author;
 
-    @Column(name = "author_id", insertable = false, updatable = false)
-    private long authorId;
+    @Column(name = "author_id", insertable = false, updatable = false, nullable = true)
+    private Long authorId;
 
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     private Category category;
 
-    @Column(name = "category_id", insertable = false, updatable = false)
-    private long categoryId;
+    @Column(name = "category_id", insertable = false, updatable = false, nullable = true)
+    private Long categoryId;
 
     @ManyToOne(targetEntity = CategoryDictionary.class, fetch = FetchType.LAZY)
     private CategoryDictionary categoryDictionary;
 
-    @Column(name = "categorydictionary_id", insertable = false, updatable = false)
-    private long categoryDictionaryId;
+    @Column(name = "categorydictionary_id", insertable = false, updatable = false, nullable = true)
+    private Long categoryDictionaryId;
 
     public Element() {
     }
@@ -120,19 +147,19 @@ public class Element implements Serializable {
         this.category = category;
     }
 
-    public long getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(long authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(long categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -144,11 +171,11 @@ public class Element implements Serializable {
         this.categoryDictionary = categoryDictionary;
     }
 
-    public long getCategoryDictionaryId() {
+    public Long getCategoryDictionaryId() {
         return categoryDictionaryId;
     }
 
-    public void setCategoryDictionaryId(long categoryDictionaryId) {
+    public void setCategoryDictionaryId(Long categoryDictionaryId) {
         this.categoryDictionaryId = categoryDictionaryId;
     }
 

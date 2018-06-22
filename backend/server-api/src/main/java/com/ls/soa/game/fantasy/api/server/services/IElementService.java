@@ -12,6 +12,8 @@ public interface IElementService {
 
     List<ElementDTO> getAll(String token) throws InsufficientPermissionsException, InvalidTokenException;
 
+    List<ElementDTO> getTopForParamByCategoryDictionary(String token, String paramName, int limit) throws InvalidTokenException, InvalidElementParamException;
+
     ElementDTO update(String token, ElementDTO elementDTO) throws InsufficientPermissionsException, ElementNotFoundException, InvalidTokenException, UserNotFoundException, CategoryDictionaryNotFoundException;
 
     void delete(String token, long elementId) throws InsufficientPermissionsException, ElementNotFoundException, InvalidTokenException;
