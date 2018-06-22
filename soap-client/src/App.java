@@ -1,12 +1,10 @@
-package client;
-
 import com.google.common.hash.Hashing;
 import com.ls.soa.game.fantasy.service.soap.*;
 
 import java.nio.charset.StandardCharsets;
 
 public class App {
-    public static void main(String[] args) throws UserNotFoundException_Exception, IncorrectPasswordException_Exception, com.ls.soa.game.fantasy.service.soap.InsufficientPermissionsException_Exception, InvalidTokenException_Exception, com.ls.soa.game.fantasy.service.soap.CategoryDictionaryNotFoundException_Exception, ElementNotFoundException_Exception {
+    public static void main(String[] args) throws UserNotFoundException_Exception, IncorrectPasswordException_Exception, InsufficientPermissionsException_Exception, InvalidTokenException_Exception, CategoryDictionaryNotFoundException_Exception, ElementNotFoundException_Exception {
         AuthServiceImplService authServiceImplService = new AuthServiceImplService();
         AuthService authService = authServiceImplService.getAuthServiceImplPort();
 
