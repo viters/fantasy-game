@@ -21,6 +21,7 @@
         <module>server</module>
         <module>rest-service</module>
         <module>soap-service</module>
+        <module>../ws-service</module>
     </modules>
 
     <build>

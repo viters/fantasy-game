@@ -6,9 +6,11 @@ import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.models.CategoryDictionaryDTO;
 import com.ls.soa.game.fantasy.api.server.models.Role;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryDictionaryService;
+import com.ls.soa.game.fantasy.service.rest.models.ErrorType;
 import com.ls.soa.game.fantasy.service.rest.utils.Secured;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -44,28 +46,28 @@ public class CategoryDictionaryController extends Controller {
 
     @PUT
     @Secured(role = Role.ADMIN)
-    public Response update(CategoryDictionaryDTO categoryDictionaryDTO, @Context SecurityContext securityContext) throws InvalidTokenException, InsufficientPermissionsException {
+    public Response update(CategoryDictionaryDTO categoryDictionaryDTO, @Context SecurityContext securityContext, @Context HttpServletRequest request) throws InvalidTokenException, InsufficientPermissionsException {
         String token = securityContext.getUserPrincipal().getName();
 
         try {
             CategoryDictionaryDTO category = categoryDictionaryService.update(token, categoryDictionaryDTO);
             return Response.status(Response.Status.CREATED).entity(category).build();
         } catch (CategoryDictionaryNotFoundException e) {
-            return buildErrorResponse("invalid-category-dictionary");
+            return buildErrorResponse(ErrorType.NO_SUCH_CATEGORY_DICTIONARY, request.getLocale());
         }
     }
 
     @DELETE
     @Secured(role = Role.ADMIN)
     @Path("{id}")
-    public Response update(@PathParam("id") String id, @Context SecurityContext securityContext) throws InvalidTokenException, InsufficientPermissionsException {
+    public Response update(@PathParam("id") String id, @Context SecurityContext securityContext, @Context HttpServletRequest request) throws InvalidTokenException, InsufficientPermissionsException {
         String token = securityContext.getUserPrincipal().getName();
 
         try {
             categoryDictionaryService.delete(token, Long.parseLong(id));
             return Response.status(Response.Status.OK).build();
         } catch (CategoryDictionaryNotFoundException e) {
-            return buildErrorResponse("invalid-category-dictionary");
+            return buildErrorResponse(ErrorType.NO_SUCH_CATEGORY_DICTIONARY, request.getLocale());
         }
     }
 }

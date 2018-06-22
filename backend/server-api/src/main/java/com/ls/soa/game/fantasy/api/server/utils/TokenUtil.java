@@ -1,16 +1,16 @@
-package com.ls.soa.game.fantasy.server.utils;
+package com.ls.soa.game.fantasy.api.server.utils;
 
 import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.enterprise.context.ApplicationScoped;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
 
-@ApplicationScoped
 public class TokenUtil {
     private final Key signingKey = new SecretKeySpec(
             DatatypeConverter.parseBase64Binary("EFEE3E98B1FEE3C75C471C66D899A"),

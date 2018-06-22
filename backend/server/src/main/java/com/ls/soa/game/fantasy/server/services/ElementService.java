@@ -3,14 +3,17 @@ package com.ls.soa.game.fantasy.server.services;
 import com.ls.soa.game.fantasy.api.server.exceptions.*;
 import com.ls.soa.game.fantasy.api.server.models.*;
 import com.ls.soa.game.fantasy.api.server.services.IElementService;
+import com.ls.soa.game.fantasy.api.server.services.IMessageBroker;
 import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
 import com.ls.soa.game.fantasy.server.daos.ElementDAO;
 import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
 import com.ls.soa.game.fantasy.server.models.Element;
 import org.hibernate.Session;
 
+import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +22,12 @@ import java.util.stream.Collectors;
 @Stateless
 @Remote(com.ls.soa.game.fantasy.api.server.services.IElementService.class)
 public class ElementService extends Service implements IElementService {
+    @EJB(mappedName = "java:global/ws-service/MessageBroker!com.ls.soa.game.fantasy.api.server.services.IMessageBroker")
+    private IMessageBroker messageBroker;
+
     @Override
     public ElementDTO create(String token, ElementDTO elementDTO) throws UserNotFoundException, CategoryDictionaryNotFoundException, InvalidTokenException, InsufficientPermissionsException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Element element = map(elementDTO, Element.class);
         if (element.getAuthorId() != null && element.getAuthorId() != 0
@@ -38,12 +44,19 @@ public class ElementService extends Service implements IElementService {
 
         ElementDTO result = map(element, ElementDTO.class);
         session.close();
+
+        try {
+            messageBroker.publish("ELEMENT_CREATED");
+        } catch (IOException e) {
+            //
+        }
+
         return result;
     }
 
     @Override
     public List<ElementDTO> getAllForUser(String token) throws InvalidTokenException, UserNotFoundException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
         Session session = dbConnectionUtil.createSession();
         ElementDAO elementDAO = new ElementDAO(session);
 
@@ -56,7 +69,7 @@ public class ElementService extends Service implements IElementService {
 
     @Override
     public List<ElementDTO> getAll(String token) throws InsufficientPermissionsException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
@@ -72,7 +85,7 @@ public class ElementService extends Service implements IElementService {
 
     @Override
     public List<ElementDTO> getTopForParamByCategoryDictionary(String token, String paramName, int limit) throws InvalidTokenException, InvalidElementParamException {
-        tokenUtil.validateToken(token);
+        tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         ElementDAO elementDAO = new ElementDAO(session);
@@ -99,7 +112,7 @@ public class ElementService extends Service implements IElementService {
 
     @Override
     public ElementDTO update(String token, ElementDTO elementDTO) throws InsufficientPermissionsException, ElementNotFoundException, InvalidTokenException, UserNotFoundException, CategoryDictionaryNotFoundException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         ElementDAO elementDAO = new ElementDAO(session);
@@ -130,7 +143,7 @@ public class ElementService extends Service implements IElementService {
 
     @Override
     public void delete(String token, long elementId) throws InsufficientPermissionsException, ElementNotFoundException, InvalidTokenException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         ElementDAO elementDAO = new ElementDAO(session);

@@ -13,7 +13,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         this.snackBar.open(error.error.devMessage, null, {
-          duration: 6000,
+          duration: 4000,
           panelClass: 'snack-error'
         });
 

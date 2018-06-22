@@ -4,21 +4,16 @@ import com.ls.soa.game.fantasy.api.server.exceptions.IncorrectPasswordException;
 import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserAlreadyExistsException;
 import com.ls.soa.game.fantasy.api.server.exceptions.UserNotFoundException;
+import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IAuthService;
 import com.ls.soa.game.fantasy.server.daos.UserDAO;
-import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import com.ls.soa.game.fantasy.server.models.User;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import org.hibernate.Session;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Calendar;
 
 @Stateless
@@ -41,7 +36,7 @@ public class AuthService extends Service implements IAuthService {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, 1);
 
-        String token = tokenUtil.createToken(Long.toString(user.getId()), user.getRole(), cal.getTimeInMillis());
+        String token = tokenManager.createToken(Long.toString(user.getId()), user.getRole(), cal.getTimeInMillis());
         session.close();
         return token;
     }
@@ -60,6 +55,6 @@ public class AuthService extends Service implements IAuthService {
 
     @Override
     public TokenMetadataDTO validateToken(String token) throws InvalidTokenException {
-        return tokenUtil.validateToken(token);
+        return tokenManager.validateToken(token);
     }
 }

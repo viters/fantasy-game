@@ -8,14 +8,12 @@ import com.ls.soa.game.fantasy.api.server.models.Role;
 import com.ls.soa.game.fantasy.api.server.models.TokenMetadataDTO;
 import com.ls.soa.game.fantasy.api.server.models.UserDTO;
 import com.ls.soa.game.fantasy.api.server.services.IUserService;
-import com.ls.soa.game.fantasy.server.daos.ElementDAO;
 import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.User;
 import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Optional;
 
 @Stateless
@@ -23,7 +21,7 @@ import java.util.Optional;
 public class UserService extends Service implements IUserService {
     @Override
     public UserDTO create(String token, String username, String password, String role) throws InsufficientPermissionsException, UserAlreadyExistsException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
@@ -40,7 +38,7 @@ public class UserService extends Service implements IUserService {
 
     @Override
     public UserDTO update(String token, UserDTO userDTO) throws InsufficientPermissionsException, UserNotFoundException, UserAlreadyExistsException, InvalidTokenException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         if (!(metadata.isAdmin() || userDTO.getId() == metadata.getUserId())) {
             throw new InsufficientPermissionsException();
@@ -70,7 +68,7 @@ public class UserService extends Service implements IUserService {
 
     @Override
     public void delete(String token, long userId) throws InsufficientPermissionsException, UserNotFoundException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
         Session session = dbConnectionUtil.createSession();

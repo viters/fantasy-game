@@ -4,8 +4,8 @@ public class ErrorResponse {
     private String code;
     private String devMessage;
 
-    public ErrorResponse(String code, String devMessage) {
-        this.code = code;
+    public ErrorResponse(ErrorType errorType, String devMessage) {
+        this.code = errorType.toString();
         this.devMessage = devMessage;
     }
 

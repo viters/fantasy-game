@@ -3,9 +3,11 @@ package com.ls.soa.game.fantasy.service.rest.controllers;
 import com.ls.soa.game.fantasy.api.server.exceptions.*;
 import com.ls.soa.game.fantasy.api.server.models.CategoryDTO;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryService;
+import com.ls.soa.game.fantasy.service.rest.models.ErrorType;
 import com.ls.soa.game.fantasy.service.rest.utils.Secured;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -54,41 +56,41 @@ public class CategoryController extends Controller {
 
     @POST
     @Secured
-    public Response create(CategoryDTO categoryDTO, @Context SecurityContext securityContext) throws UserNotFoundException, InvalidTokenException, InsufficientPermissionsException {
+    public Response create(CategoryDTO categoryDTO, @Context SecurityContext securityContext, @Context HttpServletRequest request) throws UserNotFoundException, InvalidTokenException, InsufficientPermissionsException {
         String token = securityContext.getUserPrincipal().getName();
 
         try {
             CategoryDTO category = categoryService.create(token, categoryDTO);
             return Response.status(Response.Status.CREATED).entity(category).build();
         } catch (CategoryDictionaryNotFoundException e) {
-            return buildErrorResponse("invalid-category-dictionary");
+            return buildErrorResponse(ErrorType.NO_SUCH_CATEGORY_DICTIONARY, request.getLocale());
         }
     }
 
     @PUT
     @Secured
-    public Response update(CategoryDTO categoryDTO, @Context SecurityContext securityContext) throws InvalidTokenException, CategoryNotFoundException, InsufficientPermissionsException, UserNotFoundException {
+    public Response update(CategoryDTO categoryDTO, @Context SecurityContext securityContext, @Context HttpServletRequest request) throws InvalidTokenException, CategoryNotFoundException, InsufficientPermissionsException, UserNotFoundException {
         String token = securityContext.getUserPrincipal().getName();
 
         try {
             CategoryDTO category = categoryService.update(token, categoryDTO);
             return Response.status(Response.Status.CREATED).entity(category).build();
         } catch (CategoryDictionaryNotFoundException e) {
-            return buildErrorResponse("invalid-category-dictionary");
+            return buildErrorResponse(ErrorType.NO_SUCH_CATEGORY_DICTIONARY, request.getLocale());
         }
     }
 
     @DELETE
     @Secured
     @Path("{id}")
-    public Response update(@PathParam("id") String id, @Context SecurityContext securityContext) throws InvalidTokenException, CategoryNotFoundException, InsufficientPermissionsException {
+    public Response update(@PathParam("id") String id, @Context SecurityContext securityContext, @Context HttpServletRequest request) throws InvalidTokenException, CategoryNotFoundException, InsufficientPermissionsException {
         String token = securityContext.getUserPrincipal().getName();
 
         try {
             categoryService.delete(token, Long.parseLong(id));
             return Response.status(Response.Status.OK).build();
         } catch (CategoryNotFoundException e) {
-            return buildErrorResponse("invalid-category");
+            return buildErrorResponse(ErrorType.NO_SUCH_CATEGORY, request.getLocale());
         }
     }
 }

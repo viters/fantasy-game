@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CategoryService extends Service implements ICategoryService {
     @Override
     public CategoryDTO create(String token, CategoryDTO categoryDTO) throws UserNotFoundException, CategoryDictionaryNotFoundException, InvalidTokenException, InsufficientPermissionsException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Category category = map(categoryDTO, Category.class);
         if (category.getAuthorId() != null && category.getAuthorId() != 0
@@ -40,7 +40,7 @@ public class CategoryService extends Service implements ICategoryService {
 
     @Override
     public List<CategoryDTO> getAllForUser(String token) throws UserNotFoundException, InvalidTokenException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         CategoryDAO categoryDAO = new CategoryDAO(session);
@@ -54,7 +54,7 @@ public class CategoryService extends Service implements ICategoryService {
 
     @Override
     public List<CategoryDTO> getAll(String token) throws InsufficientPermissionsException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
@@ -70,7 +70,7 @@ public class CategoryService extends Service implements ICategoryService {
 
     @Override
     public CategoryDTO get(String token, long id) throws InsufficientPermissionsException, InvalidTokenException, CategoryNotFoundException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         CategoryDAO categoryDAO = new CategoryDAO(session);
@@ -99,7 +99,7 @@ public class CategoryService extends Service implements ICategoryService {
 
     @Override
     public CategoryDTO update(String token, CategoryDTO categoryDTO) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException, UserNotFoundException, CategoryDictionaryNotFoundException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         CategoryDAO categoryDAO = new CategoryDAO(session);
@@ -129,7 +129,7 @@ public class CategoryService extends Service implements ICategoryService {
 
     @Override
     public void delete(String token, long categoryId) throws InsufficientPermissionsException, CategoryNotFoundException, InvalidTokenException {
-        TokenMetadataDTO metadata = tokenUtil.validateToken(token);
+        TokenMetadataDTO metadata = tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         CategoryDAO categoryDAO = new CategoryDAO(session);

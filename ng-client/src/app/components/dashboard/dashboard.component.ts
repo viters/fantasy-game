@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CategoryService } from '../../services/category.service';
 import { CategoryDictionaryService } from '../../services/category-dictionary.service';
+import { ElementWebSocketService } from '../../services/element-web-socket.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,7 +17,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private categoryService: CategoryService,
-              private categoryDictionaryService: CategoryDictionaryService) {
+              private categoryDictionaryService: CategoryDictionaryService,
+              private elementWebSocketService: ElementWebSocketService,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -24,5 +28,11 @@ export class DashboardComponent implements OnInit {
     );
 
     this.categoryDictionaryService.fetch();
+
+    this.elementWebSocketService.connect().subscribe(() => {
+      this.snackBar.open('Somebody created a new element! Be ready to fight!', null, {
+        duration: 4000,
+      });
+    });
   }
 }

@@ -6,13 +6,11 @@ import com.ls.soa.game.fantasy.api.server.exceptions.InvalidTokenException;
 import com.ls.soa.game.fantasy.api.server.models.CategoryDictionaryDTO;
 import com.ls.soa.game.fantasy.api.server.services.ICategoryDictionaryService;
 import com.ls.soa.game.fantasy.server.daos.CategoryDictionaryDAO;
-import com.ls.soa.game.fantasy.server.daos.UserDAO;
 import com.ls.soa.game.fantasy.server.models.CategoryDictionary;
 import org.hibernate.Session;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
 public class CategoryDictionaryService extends Service implements ICategoryDictionaryService {
     @Override
     public CategoryDictionaryDTO create(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
@@ -39,7 +37,7 @@ public class CategoryDictionaryService extends Service implements ICategoryDicti
 
     @Override
     public List<CategoryDictionaryDTO> getAll(String token) throws InvalidTokenException {
-        tokenUtil.validateToken(token);
+        tokenManager.validateToken(token);
 
         Session session = dbConnectionUtil.createSession();
         CategoryDictionaryDAO categoryDictionaryDAO = new CategoryDictionaryDAO(session);
@@ -54,7 +52,7 @@ public class CategoryDictionaryService extends Service implements ICategoryDicti
 
     @Override
     public CategoryDictionaryDTO update(String token, CategoryDictionaryDTO categoryDictionaryDTO) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
 
@@ -82,7 +80,7 @@ public class CategoryDictionaryService extends Service implements ICategoryDicti
 
     @Override
     public void delete(String token, long categoryDictionaryId) throws InsufficientPermissionsException, CategoryDictionaryNotFoundException, InvalidTokenException {
-        if (!tokenUtil.validateToken(token).isAdmin()) {
+        if (!tokenManager.validateToken(token).isAdmin()) {
             throw new InsufficientPermissionsException();
         }
         Session session = dbConnectionUtil.createSession();

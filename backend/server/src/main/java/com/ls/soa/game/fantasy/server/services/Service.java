@@ -2,13 +2,13 @@ package com.ls.soa.game.fantasy.server.services;
 
 import com.ls.soa.game.fantasy.server.utils.DBConnectionUtil;
 import com.ls.soa.game.fantasy.server.utils.MapperUtil;
-import com.ls.soa.game.fantasy.server.utils.TokenUtil;
+import com.ls.soa.game.fantasy.server.utils.TokenManager;
 
 import javax.inject.Inject;
 
 abstract class Service {
     @Inject
-    protected TokenUtil tokenUtil;
+    protected TokenManager tokenManager;
 
     @Inject
     private MapperUtil mapperUtil;
