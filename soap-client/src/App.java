@@ -16,7 +16,7 @@ public class App {
         String token = authService.login(login, password);
 
 //        createCategoryDictionary(token);
-//        updateFirstElement(token);
+        updateFirstElement(token);
     }
 
     private static void createCategoryDictionary(String token) throws InsufficientPermissionsException_Exception, InvalidTokenException_Exception {
@@ -43,6 +43,7 @@ public class App {
         ElementDTO elementDTO = new ElementDTO();
         elementDTO.setId(1);
         elementDTO.setParam1("soap_tu_był");
+        elementDTO.setParam2(20);
         elementService.update(token, elementDTO);
     }
 }
